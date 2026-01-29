@@ -33,8 +33,8 @@ const Footer = () => {
             <ul className="space-y-3">
               <li><a href="#features" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Features</a></li>
               <li><a href="#pricing" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Prijzen</a></li>
-              <li><Link to="/integrations" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Integraties</Link></li>
-              <li><Link to="/roadmap" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Roadmap</Link></li>
+              <li><a href="#suppliers" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Voor Leveranciers</a></li>
+              <li><Link to="/dashboard" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Dashboard</Link></li>
             </ul>
           </div>
 
@@ -42,10 +42,10 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Bedrijf</h4>
             <ul className="space-y-3">
-              <li><Link to="/about" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Over Ons</Link></li>
-              <li><Link to="/contact" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Contact</Link></li>
-              <li><Link to="/careers" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Vacatures</Link></li>
-              <li><Link to="/blog" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Blog</Link></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Over Ons</a></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Contact</a></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Vacatures</a></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Blog</a></li>
             </ul>
           </div>
 
@@ -53,10 +53,10 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Juridisch</h4>
             <ul className="space-y-3">
-              <li><Link to="/privacy" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Algemene Voorwaarden</Link></li>
-              <li><Link to="/gdpr" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">GDPR</Link></li>
-              <li><Link to="/security" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Security</Link></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Algemene Voorwaarden</a></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">GDPR</a></li>
+              <li><a href="#" className="text-primary-foreground/70 hover:text-primary-foreground text-sm transition-colors">Security</a></li>
             </ul>
           </div>
         </div>
