@@ -15,17 +15,17 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: FileText, label: "Contracten", href: "/dashboard/contracts" },
-  { icon: Bell, label: "Notificaties", href: "/dashboard/notifications" },
-  { icon: BarChart3, label: "Rapportages", href: "/dashboard/reports" },
-  { icon: Building2, label: "Leveranciers", href: "/dashboard/suppliers" },
-  { icon: Upload, label: "Documenten", href: "/dashboard/documents" },
-  { icon: Users, label: "Team", href: "/dashboard/team" },
+  { icon: FileText, label: "Contracten", href: "/dashboard" },
+  { icon: Bell, label: "Notificaties", href: "/dashboard" },
+  { icon: BarChart3, label: "Rapportages", href: "/dashboard" },
+  { icon: Building2, label: "Leveranciers", href: "/dashboard" },
+  { icon: Upload, label: "Documenten", href: "/dashboard" },
+  { icon: Users, label: "Team", href: "/dashboard" },
 ];
 
 const bottomItems = [
-  { icon: Settings, label: "Instellingen", href: "/dashboard/settings" },
-  { icon: HelpCircle, label: "Help", href: "/dashboard/help" },
+  { icon: Settings, label: "Instellingen", href: "/dashboard" },
+  { icon: HelpCircle, label: "Help", href: "/dashboard" },
 ];
 
 const Sidebar = () => {
@@ -89,10 +89,13 @@ const Sidebar = () => {
           );
         })}
 
-        <button className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-all duration-200 w-full">
+        <Link 
+          to="/" 
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-all duration-200 w-full"
+        >
           <LogOut className="w-5 h-5" />
           Uitloggen
-        </button>
+        </Link>
       </div>
     </aside>
   );
