@@ -59,10 +59,10 @@ const SupplierSection = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" asChild>
-                <Link to="/supplier-signup">Word Leverancier</Link>
+                <Link to="/supplier">Word Leverancier</Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link to="/supplier-info">Meer Informatie</Link>
+                <Link to="/supplier">Bekijk Dashboard</Link>
               </Button>
             </div>
           </div>
@@ -119,13 +119,13 @@ const SupplierSection = () => {
                 </div>
 
                 {/* Credits */}
-                <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg">
+                <Link to="/supplier" className="flex items-center justify-between p-4 bg-accent/10 rounded-lg hover:bg-accent/20 transition-colors">
                   <div>
                     <div className="font-semibold text-foreground">Beschikbare Credits</div>
                     <div className="text-sm text-muted-foreground">15 credits resterend</div>
                   </div>
-                  <Button size="sm" variant="hero">Aanvullen</Button>
-                </div>
+                  <Button size="sm" variant="hero">Bekijk Dashboard</Button>
+                </Link>
               </div>
             </div>
           </div>
