@@ -76,7 +76,7 @@ const Hero = () => {
                 <div className="w-3 h-3 rounded-full bg-destructive/60" />
                 <div className="w-3 h-3 rounded-full bg-warning/60" />
                 <div className="w-3 h-3 rounded-full bg-success/60" />
-                <span className="ml-4 text-sm text-muted-foreground">ContractHub Dashboard</span>
+                <span className="ml-4 text-sm text-muted-foreground">Bivaro Dashboard</span>
               </div>
               <div className="p-6 bg-background min-h-[300px] flex items-center justify-center">
                 <div className="text-center text-muted-foreground">
