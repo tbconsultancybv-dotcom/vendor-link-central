@@ -9,13 +9,11 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center">
-                <FileText className="w-5 h-5 text-accent-foreground" />
-              </div>
-              <span className="text-xl font-bold">ContractHub</span>
+              <img src="/bivaro-logo.png" alt="Bivaro" className="h-8 w-auto" />
+              <span className="text-xl font-bold">Bivaro</span>
             </Link>
             <p className="text-primary-foreground/70 text-sm mb-6">
-              Het centrale platform voor contractbeheer. Meer controle, minder zorgen.
+              Contracts in control. Leads in motion.
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-lg bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors">
@@ -63,7 +61,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-primary-foreground/60 text-sm">
-            © 2024 ContractHub. Alle rechten voorbehouden.
+            © 2025 Bivaro. Alle rechten voorbehouden.
           </p>
           <p className="text-primary-foreground/60 text-sm">
             Made with ❤️ in Nederland

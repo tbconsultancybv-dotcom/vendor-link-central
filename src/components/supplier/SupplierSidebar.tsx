@@ -37,11 +37,9 @@ const SupplierSidebar = () => {
       {/* Logo */}
       <div className="p-4 border-b border-border">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center">
-            <FileText className="w-5 h-5 text-accent-foreground" />
-          </div>
+          <img src="/bivaro-logo.png" alt="Bivaro" className="h-8 w-auto" />
           <div>
-            <span className="text-xl font-bold text-foreground">ContractHub</span>
+            <span className="text-xl font-bold text-foreground">Bivaro</span>
             <span className="block text-xs text-muted-foreground">Leverancier Portal</span>
           </div>
         </Link>
