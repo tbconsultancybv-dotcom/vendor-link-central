@@ -31,14 +31,14 @@ const Hero = () => {
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-primary-foreground/70 mb-10 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Stop met zoeken in mailboxen en mappen. ContractHub centraliseert al je leverancierscontracten, 
+            Stop met zoeken in mailboxen en mappen. Bivaro centraliseert al je leverancierscontracten, 
             bewaakt deadlines en helpt je besparen.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <Button variant="hero" size="xl" asChild>
-              <Link to="/dashboard">
+              <Link to="/auth">
                 Gratis Starten
                 <ArrowRight className="w-5 h-5" />
               </Link>
