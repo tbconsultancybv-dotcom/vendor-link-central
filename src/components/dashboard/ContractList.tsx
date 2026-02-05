@@ -1,78 +1,19 @@
-import { FileText, Calendar, Euro, AlertTriangle, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { FileText, Calendar, Euro, AlertTriangle, ChevronRight, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useContracts, Contract } from "@/hooks/useContracts";
 
-interface Contract {
-  id: string;
-  name: string;
-  supplier: string;
-  category: string;
-  endDate: string;
-  monthlyAmount: number;
-  status: "active" | "expiring" | "expired";
-  daysUntilExpiry: number;
-}
-
-const mockContracts: Contract[] = [
-  {
-    id: "1",
-    name: "Kantoorprinters Onderhoud",
-    supplier: "PrintTech B.V.",
-    category: "Printing",
-    endDate: "2024-06-15",
-    monthlyAmount: 450,
-    status: "expiring",
-    daysUntilExpiry: 45
-  },
-  {
-    id: "2",
-    name: "Telefonie & Internet",
-    supplier: "TelecomNL",
-    category: "Telecom",
-    endDate: "2025-03-01",
-    monthlyAmount: 1250,
-    status: "active",
-    daysUntilExpiry: 365
-  },
-  {
-    id: "3",
-    name: "Koffiemachines Service",
-    supplier: "CoffeePro",
-    category: "Facilities",
-    endDate: "2024-04-30",
-    monthlyAmount: 180,
-    status: "expiring",
-    daysUntilExpiry: 12
-  },
-  {
-    id: "4",
-    name: "EV Laadpalen Beheer",
-    supplier: "ChargePoint NL",
-    category: "Energie",
-    endDate: "2025-12-31",
-    monthlyAmount: 890,
-    status: "active",
-    daysUntilExpiry: 580
-  },
-  {
-    id: "5",
-    name: "IT Support & Onderhoud",
-    supplier: "TechSupport Plus",
-    category: "IT Services",
-    endDate: "2024-02-28",
-    monthlyAmount: 2100,
-    status: "expired",
-    daysUntilExpiry: -15
-  },
-];
-
-const getStatusBadge = (status: Contract["status"], daysUntilExpiry: number) => {
+const getStatusBadge = (status: Contract["status"], endDate: string) => {
+  const daysUntilExpiry = Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  
   switch (status) {
     case "expiring":
       return (
         <Badge variant="outline" className="bg-warning/10 text-warning border-warning/30">
           <AlertTriangle className="w-3 h-3 mr-1" />
-          {daysUntilExpiry} dagen
+          {daysUntilExpiry}d
         </Badge>
       );
     case "expired":
@@ -91,20 +32,59 @@ const getStatusBadge = (status: Contract["status"], daysUntilExpiry: number) => 
 };
 
 const ContractList = () => {
+  const { contracts, isLoading } = useContracts();
+
+  // Show first 5 contracts
+  const displayContracts = contracts.slice(0, 5);
+
+  if (isLoading) {
+    return (
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <div className="p-4 border-b border-border">
+          <h3 className="font-semibold text-foreground">Recente Contracten</h3>
+        </div>
+        <div className="p-8 text-center text-muted-foreground">
+          Contracten laden...
+        </div>
+      </div>
+    );
+  }
+
+  if (contracts.length === 0) {
+    return (
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <div className="p-4 border-b border-border">
+          <h3 className="font-semibold text-foreground">Recente Contracten</h3>
+        </div>
+        <div className="p-8 text-center">
+          <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
+          <p className="text-muted-foreground mb-4">Nog geen contracten toegevoegd</p>
+          <Button asChild>
+            <Link to="/dashboard/contracts">
+              <Plus className="w-4 h-4 mr-2" />
+              Eerste contract toevoegen
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-4 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">Recente Contracten</h3>
-        <a href="/dashboard/contracts" className="text-sm text-primary hover:underline">
+        <Link to="/dashboard/contracts" className="text-sm text-primary hover:underline">
           Bekijk alle
-        </a>
+        </Link>
       </div>
 
       <div className="divide-y divide-border">
-        {mockContracts.map((contract) => (
-          <div 
+        {displayContracts.map((contract) => (
+          <Link 
             key={contract.id}
-            className="p-4 hover:bg-muted/50 transition-colors cursor-pointer group"
+            to="/dashboard/contracts"
+            className="p-4 hover:bg-muted/50 transition-colors cursor-pointer group block"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -125,10 +105,12 @@ const ContractList = () => {
                 <div>
                   <h4 className="font-medium text-foreground">{contract.name}</h4>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="text-sm text-muted-foreground">{contract.supplier}</span>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                      {contract.category}
-                    </span>
+                    <span className="text-sm text-muted-foreground">{contract.supplier_name}</span>
+                    {contract.category && (
+                      <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                        {contract.category.name}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -137,21 +119,23 @@ const ContractList = () => {
                 <div className="text-right hidden md:block">
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Euro className="w-4 h-4" />
-                    <span className="font-medium text-foreground">{contract.monthlyAmount.toLocaleString('nl-NL')}</span>
+                    <span className="font-medium text-foreground">
+                      {contract.monthly_cost.toLocaleString("nl-NL")}
+                    </span>
                     <span>/maand</span>
                   </div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                     <Calendar className="w-3 h-3" />
-                    <span>Einddatum: {new Date(contract.endDate).toLocaleDateString('nl-NL')}</span>
+                    <span>Einddatum: {new Date(contract.end_date).toLocaleDateString("nl-NL")}</span>
                   </div>
                 </div>
 
-                {getStatusBadge(contract.status, contract.daysUntilExpiry)}
+                {getStatusBadge(contract.status, contract.end_date)}
 
                 <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

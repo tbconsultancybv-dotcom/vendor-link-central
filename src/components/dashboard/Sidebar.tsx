@@ -15,11 +15,11 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: FileText, label: "Contracten", href: "/dashboard" },
-  { icon: Bell, label: "Notificaties", href: "/dashboard" },
-  { icon: BarChart3, label: "Rapportages", href: "/dashboard" },
+  { icon: FileText, label: "Contracten", href: "/dashboard/contracts" },
+  { icon: Bell, label: "Notificaties", href: "/dashboard/notifications" },
+  { icon: BarChart3, label: "Rapportages", href: "/dashboard/reports" },
   { icon: Building2, label: "Leveranciers", href: "/dashboard" },
-  { icon: Upload, label: "Documenten", href: "/dashboard" },
+  { icon: Upload, label: "Documenten", href: "/dashboard/documents" },
   { icon: Users, label: "Team", href: "/dashboard" },
 ];
 
@@ -44,7 +44,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.href || 
+          const isActive = location.pathname === item.href ||
             (item.href !== "/dashboard" && location.pathname.startsWith(item.href));
           
           return (
