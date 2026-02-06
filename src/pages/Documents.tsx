@@ -79,6 +79,7 @@ const DocumentsPage = () => {
   // UI State
   const [searchQuery, setSearchQuery] = useState("");
   const [linkFilter, setLinkFilter] = useState<string>("all");
+  const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null);
   
   // Dialog States
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
@@ -132,6 +133,9 @@ const DocumentsPage = () => {
   };
 
   const handleDownload = async (doc: Document) => {
+    if (downloadingDocId) return; // Prevent multiple simultaneous downloads
+    
+    setDownloadingDocId(doc.id);
     try {
       const url = await getDownloadUrl(doc.file_path);
       
@@ -147,6 +151,8 @@ const DocumentsPage = () => {
       setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
     } catch (error) {
       console.error("Download failed:", error);
+    } finally {
+      setDownloadingDocId(null);
     }
   };
 
@@ -278,11 +284,18 @@ const DocumentsPage = () => {
                         <TableCell>
                           <button
                             onClick={() => handleDownload(doc)}
-                            className="flex items-center gap-3 hover:text-primary transition-colors text-left"
+                            className="flex items-center gap-3 hover:text-primary transition-colors text-left disabled:opacity-50 disabled:cursor-wait"
                             title="Klik om te openen"
+                            disabled={downloadingDocId === doc.id}
                           >
-                            {getFileIcon(doc.file_type)}
-                            <span className="font-medium underline-offset-2 hover:underline">{doc.file_name}</span>
+                            {downloadingDocId === doc.id ? (
+                              <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                            ) : (
+                              getFileIcon(doc.file_type)
+                            )}
+                            <span className="font-medium underline-offset-2 hover:underline">
+                              {doc.file_name}
+                            </span>
                           </button>
                         </TableCell>
                         <TableCell>
