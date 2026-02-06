@@ -134,7 +134,17 @@ const DocumentsPage = () => {
   const handleDownload = async (doc: Document) => {
     try {
       const url = await getDownloadUrl(doc.file_path);
-      window.open(url, "_blank");
+      
+      // Fetch the file and create a blob URL to avoid ad-blocker issues
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      // Open in new tab
+      window.open(blobUrl, "_blank");
+      
+      // Clean up blob URL after a delay
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
     } catch (error) {
       console.error("Download failed:", error);
     }
