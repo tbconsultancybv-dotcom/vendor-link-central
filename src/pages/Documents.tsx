@@ -266,10 +266,14 @@ const DocumentsPage = () => {
                     filteredDocuments.map((doc) => (
                       <TableRow key={doc.id} className="group">
                         <TableCell>
-                          <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleDownload(doc)}
+                            className="flex items-center gap-3 hover:text-primary transition-colors text-left"
+                            title="Klik om te openen"
+                          >
                             {getFileIcon(doc.file_type)}
-                            <span className="font-medium">{doc.file_name}</span>
-                          </div>
+                            <span className="font-medium underline-offset-2 hover:underline">{doc.file_name}</span>
+                          </button>
                         </TableCell>
                         <TableCell>
                           {doc.contract ? (
