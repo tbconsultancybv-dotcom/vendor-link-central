@@ -35,8 +35,7 @@ const Sidebar = () => {
     <aside className="fixed left-0 top-0 h-screen w-64 bg-card border-r border-border flex flex-col z-40">
       {/* Logo */}
       <div className="p-4 border-b border-border">
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/bivaro-logo.png" alt="BivaroX" className="h-8 w-auto" />
+        <Link to="/" className="flex items-center">
           <span className="text-xl font-bold text-foreground">BivaroX</span>
         </Link>
       </div>

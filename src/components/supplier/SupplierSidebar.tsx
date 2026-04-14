@@ -37,7 +37,6 @@ const SupplierSidebar = () => {
       {/* Logo */}
       <div className="p-4 border-b border-border">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/bivaro-logo.png" alt="BivaroX" className="h-8 w-auto" />
           <div>
             <span className="text-xl font-bold text-foreground">BivaroX</span>
             <span className="block text-xs text-muted-foreground">Leverancier Portal</span>

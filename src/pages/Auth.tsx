@@ -128,8 +128,7 @@ const Auth = () => {
         </Link>
 
         {/* Logo */}
-        <div className="flex items-center gap-3 mb-8">
-          <img src="/bivaro-logo.png" alt="BivaroX" className="h-10 w-auto" />
+        <div className="flex items-center mb-8">
           <span className="text-2xl font-bold text-foreground">BivaroX</span>
         </div>
 
