@@ -36,8 +36,8 @@ const Sidebar = () => {
       {/* Logo */}
       <div className="p-4 border-b border-border">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/bivaro-logo.png" alt="Bivaro" className="h-8 w-auto" />
-          <span className="text-xl font-bold text-foreground">Bivaro</span>
+          <img src="/bivaro-logo.png" alt="BivaroX" className="h-8 w-auto" />
+          <span className="text-xl font-bold text-foreground">BivaroX</span>
         </Link>
       </div>
 

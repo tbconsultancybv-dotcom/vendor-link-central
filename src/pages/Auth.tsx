@@ -129,8 +129,8 @@ const Auth = () => {
 
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
-          <img src="/bivaro-logo.png" alt="Bivaro" className="h-10 w-auto" />
-          <span className="text-2xl font-bold text-foreground">Bivaro</span>
+          <img src="/bivaro-logo.png" alt="BivaroX" className="h-10 w-auto" />
+          <span className="text-2xl font-bold text-foreground">BivaroX</span>
         </div>
 
         <Card className="border-border/50 shadow-xl">
@@ -147,7 +147,7 @@ const Auth = () => {
               <TabsContent value="login" className="mt-0">
                 <CardTitle className="text-xl mb-2">Welkom terug</CardTitle>
                 <CardDescription className="mb-6">
-                  Log in op je Bivaro account
+                  Log in op je BivaroX account
                 </CardDescription>
 
                 {/* Auth method toggle */}
@@ -226,7 +226,7 @@ const Auth = () => {
               <TabsContent value="register" className="mt-0">
                 <CardTitle className="text-xl mb-2">Account aanmaken</CardTitle>
                 <CardDescription className="mb-6">
-                  Start gratis met Bivaro contractbeheer
+                  Start gratis met BivaroX contractbeheer
                 </CardDescription>
 
                 <form onSubmit={handleSignUp} className="space-y-4">
