@@ -8,8 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src="/bivaro-logo.png" alt="BivaroX" className="h-8 w-auto" />
+            <Link to="/" className="flex items-center mb-4">
               <span className="text-xl font-bold">BivaroX</span>
             </Link>
             <p className="text-primary-foreground/70 text-sm mb-6">
