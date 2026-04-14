@@ -9,8 +9,8 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src="/bivaro-logo.png" alt="Bivaro" className="h-8 w-auto" />
-              <span className="text-xl font-bold">Bivaro</span>
+              <img src="/bivaro-logo.png" alt="BivaroX" className="h-8 w-auto" />
+              <span className="text-xl font-bold">BivaroX</span>
             </Link>
             <p className="text-primary-foreground/70 text-sm mb-6">
               Contracts in control. Leads in motion.
@@ -61,7 +61,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-primary-foreground/60 text-sm">
-            © 2025 Bivaro. Alle rechten voorbehouden.
+            © 2025 BivaroX. Alle rechten voorbehouden.
           </p>
           <p className="text-primary-foreground/60 text-sm">
             Made with ❤️ in Nederland

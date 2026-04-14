@@ -12,8 +12,8 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <img src="/bivaro-logo.png" alt="Bivaro" className="h-8 w-auto" />
-            <span className="text-xl font-bold text-foreground">Bivaro</span>
+            <img src="/bivaro-logo.png" alt="BivaroX" className="h-8 w-auto" />
+            <span className="text-xl font-bold text-foreground">BivaroX</span>
           </Link>
 
           {/* Desktop Navigation */}

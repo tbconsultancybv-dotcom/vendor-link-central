@@ -31,7 +31,7 @@ const Hero = () => {
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-primary-foreground/70 mb-10 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Stop met zoeken in mailboxen en mappen. Bivaro centraliseert al je leverancierscontracten, 
+            Stop met zoeken in mailboxen en mappen. BivaroX centraliseert al je leverancierscontracten, 
             bewaakt deadlines en helpt je besparen.
           </p>
 
@@ -76,7 +76,7 @@ const Hero = () => {
                 <div className="w-3 h-3 rounded-full bg-destructive/60" />
                 <div className="w-3 h-3 rounded-full bg-warning/60" />
                 <div className="w-3 h-3 rounded-full bg-success/60" />
-                <span className="ml-4 text-sm text-muted-foreground">Bivaro Dashboard</span>
+                <span className="ml-4 text-sm text-muted-foreground">BivaroX Dashboard</span>
               </div>
               <div className="p-6 bg-background min-h-[300px] flex items-center justify-center">
                 <div className="text-center text-muted-foreground">
