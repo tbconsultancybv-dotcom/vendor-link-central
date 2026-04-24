@@ -1,123 +1,92 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { FileText, AlertTriangle, Euro, TrendingDown } from "lucide-react";
+import Sidebar from "@/components/dashboard/Sidebar";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import StatsCard from "@/components/dashboard/StatsCard";
+import ContractList from "@/components/dashboard/ContractList";
+import UpcomingAlerts from "@/components/dashboard/UpcomingAlerts";
+import CostOverview from "@/components/dashboard/CostOverview";
 import { useContracts } from "@/hooks/useContracts";
-import ContractCard from "@/components/contracts/ContractCard";
-import { Button } from "@/components/ui/button";
-import { Loader2, Plus, AlertCircle, Clock, CheckCircle2 } from "lucide-react";
-import { daysUntilAction, formatEuro, getUrgency } from "@/lib/contractUtils";
-import { addMonths, isBefore } from "date-fns";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const Dashboard = () => {
-  const { data: contracts = [], isLoading } = useContracts();
+  const navigate = useNavigate();
+  const { contracts, isLoading } = useContracts();
+  const { notifications } = useNotifications();
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  if (contracts.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <h2 className="text-2xl font-bold mb-2">Nog geen contracten</h2>
-        <p className="text-muted-foreground mb-6">Voeg je eerste contract toe om te beginnen.</p>
-        <Link to="/app/upload">
-          <Button size="lg" className="gap-2"><Plus className="w-4 h-4" /> Contract toevoegen</Button>
-        </Link>
-      </div>
-    );
-  }
-
-  // Buckets
-  const urgent = contracts.filter((c) => getUrgency(c) === "urgent" || getUrgency(c) === "expired");
-  const soon = contracts.filter((c) => getUrgency(c) === "soon");
-  const later = contracts.filter((c) => getUrgency(c) === "later");
-
-  // Top stats
-  const threeMonthsFromNow = addMonths(new Date(), 3);
-  const renewingSoon = contracts.filter((c) =>
-    isBefore(new Date(c.end_date), threeMonthsFromNow)
-  );
-  const renewingValue = renewingSoon.reduce((sum, c) => sum + (Number(c.yearly_cost) || 0), 0);
-  const actionsThisMonth = contracts.filter((c) => {
-    const d = daysUntilAction(c);
-    return d >= 0 && d <= 30;
-  }).length;
+  // Calculate stats
+  const activeContracts = contracts.filter((c) => c.status === "active" || c.status === "expiring").length;
+  const actionRequired = notifications.filter((n) => !n.is_actioned && (n.priority === "high" || n.priority === "critical")).length;
+  const monthlyTotal = contracts.reduce((sum, c) => sum + c.monthly_cost, 0);
+  const expiringContracts = contracts.filter((c) => c.status === "expiring").length;
 
   return (
-    <div className="space-y-8">
-      {/* Hero greeting */}
-      <div>
-        <h1 className="text-3xl font-bold mb-1">Wat moet er deze maand gebeuren?</h1>
-        <p className="text-muted-foreground">Een overzicht van je contracten — gerangschikt op urgentie.</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Sidebar />
+      
+      <main className="ml-64">
+        <DashboardHeader 
+          title="Dashboard" 
+          subtitle="Welkom terug! Hier is je contractoverzicht."
+          showAddButton
+          addButtonLabel="Nieuw Contract"
+          onAddClick={() => navigate("/dashboard/contracts")}
+        />
 
-      {/* Top stats */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="bg-card border border-border rounded-xl p-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <Clock className="w-4 h-4" /> Verlengen binnen 3 maanden
+        <div className="p-6">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <StatsCard
+              title="Actieve Contracten"
+              value={isLoading ? "..." : activeContracts}
+              change={`${expiringContracts} verlopen binnenkort`}
+              changeType={expiringContracts > 0 ? "negative" : "neutral"}
+              icon={FileText}
+              iconColor="text-primary"
+            />
+            <StatsCard
+              title="Actie Vereist"
+              value={isLoading ? "..." : actionRequired}
+              change={actionRequired > 0 ? "Bekijk notificaties" : "Alles onder controle"}
+              changeType={actionRequired > 0 ? "negative" : "positive"}
+              icon={AlertTriangle}
+              iconColor="text-warning"
+            />
+            <StatsCard
+              title="Maandkosten"
+              value={isLoading ? "..." : `€${monthlyTotal.toLocaleString("nl-NL")}`}
+              change="Totaal alle contracten"
+              changeType="neutral"
+              icon={Euro}
+              iconColor="text-foreground"
+            />
+            <StatsCard
+              title="Potentiële Besparing"
+              value="€-"
+              change="Publiceer contracten op marktplaats"
+              changeType="positive"
+              icon={TrendingDown}
+              iconColor="text-success"
+            />
           </div>
-          <div className="text-3xl font-bold">{formatEuro(renewingValue)}</div>
-          <div className="text-sm text-muted-foreground mt-1">
-            {renewingSoon.length} {renewingSoon.length === 1 ? "contract" : "contracten"}
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Contract List - Takes 2 columns */}
+            <div className="lg:col-span-2">
+              <ContractList />
+            </div>
+
+            {/* Right Sidebar */}
+            <div className="space-y-6">
+              <UpcomingAlerts />
+              <CostOverview />
+            </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <AlertCircle className="w-4 h-4" /> Acties nodig deze maand
-          </div>
-          <div className="text-3xl font-bold">{actionsThisMonth}</div>
-          <div className="text-sm text-muted-foreground mt-1">
-            {actionsThisMonth === 0 ? "Alles onder controle" : "Bekijk hieronder"}
-          </div>
-        </div>
-      </div>
-
-      {/* Sections */}
-      <Section
-        title="🔥 Urgent — actie nodig binnen 30 dagen"
-        contracts={urgent}
-        emptyText="Geen urgente acties. Goed bezig."
-      />
-      <Section
-        title="⏳ Binnenkort — 30–90 dagen"
-        contracts={soon}
-        emptyText="Niets binnenkort."
-      />
-      <Section
-        title="✅ Later — meer dan 90 dagen"
-        contracts={later}
-        emptyText="Geen contracten op lange termijn."
-      />
+      </main>
     </div>
   );
 };
-
-const Section = ({
-  title,
-  contracts,
-  emptyText,
-}: {
-  title: string;
-  contracts: any[];
-  emptyText: string;
-}) => (
-  <section>
-    <h2 className="text-lg font-semibold mb-3">{title}</h2>
-    {contracts.length === 0 ? (
-      <div className="text-sm text-muted-foreground py-4 px-5 bg-muted/30 rounded-lg flex items-center gap-2">
-        <CheckCircle2 className="w-4 h-4" /> {emptyText}
-      </div>
-    ) : (
-      <div className="space-y-3">
-        {contracts.map((c) => (
-          <ContractCard key={c.id} contract={c} />
-        ))}
-      </div>
-    )}
-  </section>
-);
 
 export default Dashboard;

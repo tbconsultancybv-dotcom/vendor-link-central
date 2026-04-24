@@ -1,1 +1,4 @@
 project_id = "uezgtqbuotfxdbwbvstn"
+
+[functions.check-contract-notifications]
+verify_jwt = false

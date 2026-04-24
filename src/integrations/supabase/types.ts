@@ -73,10 +73,8 @@ export type Database = {
           category_id: string | null
           contact_email: string | null
           contact_phone: string | null
-          contract_value: number | null
           created_at: string
           data_visibility_level: number | null
-          decision_at: string | null
           department: string | null
           description: string | null
           division: string | null
@@ -88,16 +86,13 @@ export type Database = {
           monthly_cost: number | null
           name: string
           notes: string | null
-          open_to_offers: string | null
           renewal_period_months: number | null
-          responsible_name: string | null
           silent_renewal: boolean | null
           start_date: string
           status: Database["public"]["Enums"]["contract_status"] | null
           supplier_name: string
           termination_period_days: number | null
           updated_at: string
-          user_decision: string | null
           user_id: string
           variable_costs: string | null
           yearly_cost: number | null
@@ -106,10 +101,8 @@ export type Database = {
           category_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
-          contract_value?: number | null
           created_at?: string
           data_visibility_level?: number | null
-          decision_at?: string | null
           department?: string | null
           description?: string | null
           division?: string | null
@@ -121,16 +114,13 @@ export type Database = {
           monthly_cost?: number | null
           name: string
           notes?: string | null
-          open_to_offers?: string | null
           renewal_period_months?: number | null
-          responsible_name?: string | null
           silent_renewal?: boolean | null
           start_date: string
           status?: Database["public"]["Enums"]["contract_status"] | null
           supplier_name: string
           termination_period_days?: number | null
           updated_at?: string
-          user_decision?: string | null
           user_id: string
           variable_costs?: string | null
           yearly_cost?: number | null
@@ -139,10 +129,8 @@ export type Database = {
           category_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
-          contract_value?: number | null
           created_at?: string
           data_visibility_level?: number | null
-          decision_at?: string | null
           department?: string | null
           description?: string | null
           division?: string | null
@@ -154,16 +142,13 @@ export type Database = {
           monthly_cost?: number | null
           name?: string
           notes?: string | null
-          open_to_offers?: string | null
           renewal_period_months?: number | null
-          responsible_name?: string | null
           silent_renewal?: boolean | null
           start_date?: string
           status?: Database["public"]["Enums"]["contract_status"] | null
           supplier_name?: string
           termination_period_days?: number | null
           updated_at?: string
-          user_decision?: string | null
           user_id?: string
           variable_costs?: string | null
           yearly_cost?: number | null
