@@ -63,7 +63,7 @@ const Footer = () => {
             © 2025 BivaroX. Alle rechten voorbehouden.
           </p>
           <p className="text-primary-foreground/60 text-sm">
-            Made with ❤️ in Nederland
+            Made with ❤️ in België
           </p>
         </div>
       </div>
