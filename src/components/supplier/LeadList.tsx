@@ -8,8 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 const leads = [
   {
     id: 1,
-    company: "TechCorp B.V.",
-    location: "Amsterdam",
+    company: "TechComm BV",
+    location: "Brussel",
     contractType: "IT Services",
     contractValue: "€2.500/maand",
     expiresIn: "30 dagen",
@@ -18,8 +18,8 @@ const leads = [
   },
   {
     id: 2,
-    company: "Bouwgroep Nederland",
-    location: "Rotterdam",
+    company: "Bouwgroep België",
+    location: "Antwerpen",
     contractType: "Telecom",
     contractValue: "€1.800/maand",
     expiresIn: "45 dagen",
@@ -28,8 +28,8 @@ const leads = [
   },
   {
     id: 3,
-    company: "Retail Plus B.V.",
-    location: "Utrecht",
+    company: "Retail Plus BVBA",
+    location: "Gent",
     contractType: "Printing Services",
     contractValue: "€950/maand",
     expiresIn: "60 dagen",
@@ -39,7 +39,7 @@ const leads = [
   {
     id: 4,
     company: "LogiTrans",
-    location: "Eindhoven",
+    location: "Luik",
     contractType: "Fleet Management",
     contractValue: "€4.200/maand",
     expiresIn: "21 dagen",
@@ -49,7 +49,7 @@ const leads = [
   {
     id: 5,
     company: "MediCare Group",
-    location: "Den Haag",
+    location: "Leuven",
     contractType: "IT Infrastructure",
     contractValue: "€3.100/maand",
     expiresIn: "14 dagen",

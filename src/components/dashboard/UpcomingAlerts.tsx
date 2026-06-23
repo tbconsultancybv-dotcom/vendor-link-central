@@ -20,7 +20,7 @@ const mockAlerts: Alert[] = [
   {
     id: "2",
     contractName: "Kantoorprinters Onderhoud",
-    supplier: "PrintTech B.V.",
+    supplier: "PrintComm",
     daysLeft: 45,
     action: "renew"
   },
