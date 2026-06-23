@@ -11,6 +11,7 @@ import Contracts from "./pages/Contracts";
 import Notifications from "./pages/Notifications";
 import Documents from "./pages/Documents";
 import Reports from "./pages/Reports";
+import Categories from "./pages/Categories";
 import SupplierDashboard from "./pages/SupplierDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/dashboard/notifications" element={<Notifications />} />
             <Route path="/dashboard/documents" element={<Documents />} />
             <Route path="/dashboard/reports" element={<Reports />} />
+            <Route path="/dashboard/categories" element={<Categories />} />
             <Route path="/supplier" element={<SupplierDashboard />} />
             <Route path="/supplier/*" element={<SupplierDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

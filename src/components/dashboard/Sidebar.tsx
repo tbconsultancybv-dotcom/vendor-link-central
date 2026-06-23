@@ -9,13 +9,15 @@ import {
   Building2,
   Upload,
   HelpCircle,
-  LogOut
+  LogOut,
+  Tag
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: FileText, label: "Contracten", href: "/dashboard/contracts" },
+  { icon: Tag, label: "Categorieën", href: "/dashboard/categories" },
   { icon: Bell, label: "Notificaties", href: "/dashboard/notifications" },
   { icon: BarChart3, label: "Rapportages", href: "/dashboard/reports" },
   { icon: Building2, label: "Leveranciers", href: "/dashboard" },
