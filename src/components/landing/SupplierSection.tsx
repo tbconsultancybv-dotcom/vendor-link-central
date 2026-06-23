@@ -95,8 +95,8 @@ const SupplierSection = () => {
                   <h4 className="text-sm font-semibold text-foreground mb-3">Recente Leads</h4>
                   <div className="space-y-3">
                     {[
-                      { company: "TechCorp B.V.", type: "IT Services", status: "Nieuw" },
-                      { company: "Bouwgroep NL", type: "Telecom", status: "In gesprek" },
+                      { company: "TechComm BV", type: "IT Services", status: "Nieuw" },
+                      { company: "Bouwgroep België", type: "Telecom", status: "In gesprek" },
                       { company: "Retail Plus", type: "Printing", status: "Offerte verzonden" }
                     ].map((lead, index) => (
                       <div key={index} className="flex items-center justify-between bg-muted/50 rounded-lg p-3">

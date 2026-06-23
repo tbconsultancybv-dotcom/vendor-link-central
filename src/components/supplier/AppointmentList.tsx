@@ -8,12 +8,12 @@ import { useToast } from "@/hooks/use-toast";
 const appointments = [
   {
     id: 1,
-    company: "TechCorp B.V.",
+    company: "TechComm BV",
     date: "2 Feb 2026",
     time: "10:00",
     type: "video",
     status: "confirmed",
-    contact: "Jan de Vries",
+    contact: "Jean Dupont",
   },
   {
     id: 2,
@@ -21,18 +21,18 @@ const appointments = [
     date: "4 Feb 2026",
     time: "14:30",
     type: "physical",
-    location: "Eindhoven",
+    location: "Luik",
     status: "pending",
-    contact: "Maria Jansen",
+    contact: "Marie Dubois",
   },
   {
     id: 3,
-    company: "Retail Plus B.V.",
+    company: "Retail Plus BVBA",
     date: "6 Feb 2026",
     time: "11:00",
     type: "video",
     status: "confirmed",
-    contact: "Peter Bakker",
+    contact: "Pierre Martin",
   },
 ];
 
