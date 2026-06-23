@@ -155,15 +155,9 @@ const Categories = () => {
     <div className="min-h-screen bg-background">
       <Sidebar />
       <div className="ml-64">
-        <DashboardHeader />
+        <DashboardHeader title="Categorieën" subtitle="Beheer je contractcategorieën" />
         <main className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Contractcategorieën</h1>
-              <p className="text-muted-foreground mt-1">
-                Beheer de categorieën die je kunt toewijzen aan contracten.
-              </p>
-            </div>
+          <div className="flex items-center justify-end mb-8">
             <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
               <DialogTrigger asChild>
                 <Button onClick={openCreate}>
