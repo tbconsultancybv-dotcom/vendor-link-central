@@ -38,21 +38,26 @@ const fmtDate = (d: string | null | undefined) =>
   d ? new Date(d).toLocaleDateString("nl-BE", { day: "numeric", month: "short", year: "numeric" }) : "—";
 
 const SupplierLeadsPage = () => {
-  const { myLeads } = useSupplierLeads();
+  const supplierLeads = useSupplierLeads();
+  const { myLeads } = supplierLeads;
   const [selected, setSelected] = useState<SupplierLead | null>(null);
+  const [activeTab, setActiveTab] = useState("inbox");
 
   return (
     <>
       <DashboardHeader title="Leads" subtitle="Inkomende leads uit de marketplace" />
       <div className="p-6">
-        <Tabs defaultValue="inbox">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="inbox">Inbox</TabsTrigger>
             <TabsTrigger value="mine">Mijn Leads ({myLeads.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="inbox" className="mt-6">
-            <SupplierLeadsInbox />
+            <SupplierLeadsInbox
+              leadsController={supplierLeads}
+              onClaimed={() => setActiveTab("mine")}
+            />
           </TabsContent>
 
           <TabsContent value="mine" className="mt-6">

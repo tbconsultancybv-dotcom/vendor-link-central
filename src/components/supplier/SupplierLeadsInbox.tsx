@@ -21,6 +21,8 @@ import { Link } from "react-router-dom";
 
 interface Props {
   limit?: number;
+  leadsController?: ReturnType<typeof useSupplierLeads>;
+  onClaimed?: () => void;
 }
 
 const formatDate = (d: string | null) =>
@@ -32,8 +34,9 @@ const daysUntil = (d: string | null) => {
   return diff;
 };
 
-const SupplierLeadsInbox = ({ limit }: Props) => {
-  const { openLeads, loading, isSupplier, claimLead } = useSupplierLeads();
+const SupplierLeadsInbox = ({ limit, leadsController, onClaimed }: Props) => {
+  const fallbackController = useSupplierLeads();
+  const { openLeads, loading, isSupplier, claimLead } = leadsController ?? fallbackController;
   const { toast } = useToast();
   const [claiming, setClaiming] = useState<string | null>(null);
 
@@ -71,6 +74,7 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
       title: "Lead geclaimd!",
       description: `${availableLead.credits_cost} credits afgeschreven. Contactgegevens nu zichtbaar.`,
     });
+    onClaimed?.();
   };
 
   return (
