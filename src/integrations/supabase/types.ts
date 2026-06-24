@@ -592,6 +592,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_supplier: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "manager" | "viewer" | "finance"
