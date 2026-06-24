@@ -15,6 +15,12 @@ import {
   Euro,
   FileText,
   Eye,
+  MapPin,
+  Cpu,
+  Lock,
+  Sparkles,
+  Crown,
+  FileLock2,
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -132,118 +138,199 @@ const SupplierLeadsPage = () => {
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-primary" />
-              {selected?.contract?.name ?? "Lead details"}
-            </DialogTitle>
-            <DialogDescription>
-              Geclaimd op {fmtDate(selected?.claimed_at)} · {selected?.credits_cost} credits
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          {selected?.contract && (() => {
+            const c = selected.contract;
+            const tier = (c.data_visibility_level ?? 1) as 1 | 2 | 3;
+            const tierMeta = {
+              1: { label: "Basis", icon: Lock, className: "bg-muted text-muted-foreground" },
+              2: { label: "Premium", icon: Sparkles, className: "bg-primary/10 text-primary" },
+              3: { label: "Elite", icon: Crown, className: "bg-accent text-accent-foreground" },
+            }[tier];
+            const TierIcon = tierMeta.icon;
+            const showContractDetails = tier >= 2;
+            const showDocuments = tier >= 3;
 
-          {selected?.contract && (
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <User className="w-4 h-4" /> Contactgegevens klant
-                </h4>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  {selected.contract.responsible_name && (
-                    <div>
-                      <p className="text-muted-foreground text-xs">Contactpersoon</p>
-                      <p className="text-foreground">{selected.contract.responsible_name}</p>
-                    </div>
-                  )}
-                  {selected.contract.contact_email && (
-                    <div>
-                      <p className="text-muted-foreground text-xs">E-mail</p>
-                      <a
-                        href={`mailto:${selected.contract.contact_email}`}
-                        className="text-primary hover:underline"
-                      >
-                        {selected.contract.contact_email}
-                      </a>
-                    </div>
-                  )}
-                  {selected.contract.contact_phone && (
-                    <div>
-                      <p className="text-muted-foreground text-xs">Telefoon</p>
-                      <a
-                        href={`tel:${selected.contract.contact_phone}`}
-                        className="text-primary hover:underline"
-                      >
-                        {selected.contract.contact_phone}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2 flex-wrap">
+                    <Building2 className="w-5 h-5 text-primary" />
+                    {c.customer?.company_name || c.name || "Lead details"}
+                    <Badge className={`gap-1 ${tierMeta.className}`}>
+                      <TierIcon className="w-3 h-3" />
+                      {tierMeta.label}
+                    </Badge>
+                  </DialogTitle>
+                  <DialogDescription>
+                    Geclaimd op {fmtDate(selected.claimed_at)} · {selected.credits_cost} credits
+                  </DialogDescription>
+                </DialogHeader>
 
-              <Separator />
-
-              <div>
-                <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <FileText className="w-4 h-4" /> Contract
-                </h4>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  {selected.contract.supplier_name && (
-                    <div>
-                      <p className="text-muted-foreground text-xs">Huidige leverancier</p>
-                      <p className="text-foreground">{selected.contract.supplier_name}</p>
-                    </div>
-                  )}
+                <div className="space-y-4 mt-2">
+                  {/* Basis info — always visible after claim */}
                   <div>
-                    <p className="text-muted-foreground text-xs">Looptijd</p>
-                    <p className="text-foreground">
-                      {fmtDate(selected.contract.start_date)} → {fmtDate(selected.contract.end_date)}
-                    </p>
+                    <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+                      <User className="w-4 h-4" /> Klantgegevens
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      {c.customer?.company_name && (
+                        <div>
+                          <p className="text-muted-foreground text-xs">Bedrijfsnaam</p>
+                          <p className="text-foreground">{c.customer.company_name}</p>
+                        </div>
+                      )}
+                      {(c.responsible_name || c.customer?.full_name) && (
+                        <div>
+                          <p className="text-muted-foreground text-xs">Contactpersoon</p>
+                          <p className="text-foreground">
+                            {c.responsible_name || c.customer?.full_name}
+                          </p>
+                        </div>
+                      )}
+                      {(c.contact_phone || c.customer?.phone) && (
+                        <div>
+                          <p className="text-muted-foreground text-xs">Telefoon</p>
+                          <a
+                            href={`tel:${c.contact_phone || c.customer?.phone}`}
+                            className="text-primary hover:underline"
+                          >
+                            {c.contact_phone || c.customer?.phone}
+                          </a>
+                        </div>
+                      )}
+                      {(c.contact_email || c.customer?.email) && (
+                        <div>
+                          <p className="text-muted-foreground text-xs">E-mail</p>
+                          <a
+                            href={`mailto:${c.contact_email || c.customer?.email}`}
+                            className="text-primary hover:underline"
+                          >
+                            {c.contact_email || c.customer?.email}
+                          </a>
+                        </div>
+                      )}
+                      {c.customer?.province && (
+                        <div>
+                          <p className="text-muted-foreground text-xs">Provincie</p>
+                          <p className="text-foreground flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5" />
+                            {c.customer.province}
+                          </p>
+                        </div>
+                      )}
+                      {c.device_count !== null && c.device_count !== undefined && (
+                        <div>
+                          <p className="text-muted-foreground text-xs">Aantal toestellen</p>
+                          <p className="text-foreground flex items-center gap-1">
+                            <Cpu className="w-3.5 h-3.5" />
+                            {c.device_count}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  {(selected.contract.monthly_cost || selected.contract.yearly_cost) && (
-                    <div>
-                      <p className="text-muted-foreground text-xs">Kost</p>
-                      <p className="text-foreground flex items-center gap-1">
-                        <Euro className="w-3.5 h-3.5" />
-                        {selected.contract.monthly_cost
-                          ? `${Number(selected.contract.monthly_cost).toLocaleString("nl-BE")} / maand`
-                          : `${Number(selected.contract.yearly_cost).toLocaleString("nl-BE")} / jaar`}
-                      </p>
+
+                  {/* Premium & Elite — full contract details */}
+                  {showContractDetails ? (
+                    <>
+                      <Separator />
+                      <div>
+                        <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+                          <FileText className="w-4 h-4" /> Contractdetails
+                        </h4>
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          {c.supplier_name && (
+                            <div>
+                              <p className="text-muted-foreground text-xs">Huidige leverancier</p>
+                              <p className="text-foreground">{c.supplier_name}</p>
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-muted-foreground text-xs">Looptijd</p>
+                            <p className="text-foreground">
+                              {fmtDate(c.start_date)} → {fmtDate(c.end_date)}
+                            </p>
+                          </div>
+                          {(c.monthly_cost || c.yearly_cost) && (
+                            <div>
+                              <p className="text-muted-foreground text-xs">Kost</p>
+                              <p className="text-foreground flex items-center gap-1">
+                                <Euro className="w-3.5 h-3.5" />
+                                {c.monthly_cost
+                                  ? `${Number(c.monthly_cost).toLocaleString("nl-BE")} / maand`
+                                  : `${Number(c.yearly_cost).toLocaleString("nl-BE")} / jaar`}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        {c.description && (
+                          <div className="mt-3">
+                            <p className="text-muted-foreground text-xs mb-1">Omschrijving</p>
+                            <p className="text-sm text-foreground">{c.description}</p>
+                          </div>
+                        )}
+                        {c.notes && (
+                          <div className="mt-3">
+                            <p className="text-muted-foreground text-xs mb-1">Notities klant</p>
+                            <p className="text-sm text-foreground">{c.notes}</p>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground flex items-start gap-2">
+                      <Lock className="w-4 h-4 mt-0.5" />
+                      <span>
+                        Volledige contractgegevens (looptijd, kosten, beschrijving) zijn enkel
+                        beschikbaar bij een <strong>Premium</strong> of <strong>Elite</strong> lead.
+                      </span>
                     </div>
                   )}
-                </div>
-                {selected.contract.description && (
-                  <div className="mt-3">
-                    <p className="text-muted-foreground text-xs mb-1">Omschrijving</p>
-                    <p className="text-sm text-foreground">{selected.contract.description}</p>
-                  </div>
-                )}
-                {selected.contract.notes && (
-                  <div className="mt-3">
-                    <p className="text-muted-foreground text-xs mb-1">Notities klant</p>
-                    <p className="text-sm text-foreground">{selected.contract.notes}</p>
-                  </div>
-                )}
-              </div>
 
-              <div className="flex gap-2 pt-2">
-                {selected.contract.contact_email && (
-                  <Button asChild>
-                    <a href={`mailto:${selected.contract.contact_email}`}>
-                      <Mail className="w-4 h-4 mr-1" /> Mail klant
-                    </a>
-                  </Button>
-                )}
-                {selected.contract.contact_phone && (
-                  <Button variant="outline" asChild>
-                    <a href={`tel:${selected.contract.contact_phone}`}>
-                      <Phone className="w-4 h-4 mr-1" /> Bel klant
-                    </a>
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
+                  {/* Elite — documents */}
+                  {showDocuments ? (
+                    <>
+                      <Separator />
+                      <div>
+                        <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+                          <FileLock2 className="w-4 h-4" /> Documenten
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          PDF contracten en facturen zijn beschikbaar via de klantmap.
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground flex items-start gap-2">
+                      <FileLock2 className="w-4 h-4 mt-0.5" />
+                      <span>
+                        PDF contracten en facturen zijn enkel beschikbaar bij een{" "}
+                        <strong>Elite</strong> lead.
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 pt-2">
+                    {(c.contact_email || c.customer?.email) && (
+                      <Button asChild>
+                        <a href={`mailto:${c.contact_email || c.customer?.email}`}>
+                          <Mail className="w-4 h-4 mr-1" /> Mail klant
+                        </a>
+                      </Button>
+                    )}
+                    {(c.contact_phone || c.customer?.phone) && (
+                      <Button variant="outline" asChild>
+                        <a href={`tel:${c.contact_phone || c.customer?.phone}`}>
+                          <Phone className="w-4 h-4 mr-1" /> Bel klant
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </>
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </>
