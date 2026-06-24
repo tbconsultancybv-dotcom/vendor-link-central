@@ -53,14 +53,25 @@ const PublishMarketplaceDialog = ({
   isLoading,
 }: PublishMarketplaceDialogProps) => {
   const [maxSuppliers, setMaxSuppliers] = useState(3);
-  const [dataVisibility, setDataVisibility] = useState(1);
   const [deviceCount, setDeviceCount] = useState<string>("");
+
+  // Welke gegevens wilt u vrijgeven aan derden?
+  const [shareMonthlyCost, setShareMonthlyCost] = useState(false);
+  const [shareContractPdf, setShareContractPdf] = useState(false);
+  const [shareInvoicePdf, setShareInvoicePdf] = useState(false);
+
+  // Afgeleid: tier op basis van de selectie
+  const dataVisibility =
+    shareContractPdf || shareInvoicePdf ? 3 : shareMonthlyCost ? 2 : 1;
 
   useEffect(() => {
     if (open) {
       setDeviceCount(contract.device_count ? String(contract.device_count) : "");
       setMaxSuppliers(contract.max_suppliers || 3);
-      setDataVisibility(contract.data_visibility_level || 1);
+      const initialLevel = contract.data_visibility_level || 1;
+      setShareMonthlyCost(initialLevel >= 2);
+      setShareContractPdf(initialLevel >= 3);
+      setShareInvoicePdf(initialLevel >= 3);
     }
   }, [open, contract]);
 
