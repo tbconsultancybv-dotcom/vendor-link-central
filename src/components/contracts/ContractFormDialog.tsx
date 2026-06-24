@@ -61,6 +61,71 @@ const contractSchema = z.object({
 
 type ContractFormValues = z.infer<typeof contractSchema>;
 
+const DateInputField = ({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: Date | undefined;
+  onChange: (d: Date | undefined) => void;
+}) => {
+  const [text, setText] = useState(value ? format(value, "dd-MM-yyyy") : "");
+
+  useEffect(() => {
+    setText(value ? format(value, "dd-MM-yyyy") : "");
+  }, [value]);
+
+  const commit = (raw: string) => {
+    const cleaned = raw.trim();
+    if (!cleaned) {
+      onChange(undefined);
+      return;
+    }
+    const formats = ["dd-MM-yyyy", "d-M-yyyy", "dd/MM/yyyy", "d/M/yyyy"];
+    for (const f of formats) {
+      const parsed = parse(cleaned, f, new Date());
+      if (isValid(parsed)) {
+        onChange(parsed);
+        return;
+      }
+    }
+  };
+
+  return (
+    <FormItem className="flex flex-col">
+      <FormLabel>{label}</FormLabel>
+      <div className="flex gap-2">
+        <FormControl>
+          <Input
+            placeholder="dd-mm-jjjj"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onBlur={(e) => commit(e.target.value)}
+          />
+        </FormControl>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button type="button" variant="outline" size="icon" className="shrink-0">
+              <CalendarIcon className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
+            <Calendar
+              mode="single"
+              selected={value}
+              onSelect={(d) => onChange(d)}
+              initialFocus
+              className="pointer-events-auto"
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+      <FormMessage />
+    </FormItem>
+  );
+};
+
 interface ContractFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
