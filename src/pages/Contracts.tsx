@@ -61,7 +61,7 @@ import { cn } from "@/lib/utils";
 
 const ContractsPage = () => {
   const navigate = useNavigate();
-  const { contracts, isLoading, createContract, updateContract, deleteContract, publishToMarketplace } = useContracts();
+  const { contracts, isLoading, createContract, updateContract, deleteContract, publishToMarketplace, removeFromMarketplace } = useContracts();
   const { data: categories = [] } = useCategories();
 
   // UI State
@@ -73,6 +73,7 @@ const ContractsPage = () => {
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [removeMarketplaceDialogOpen, setRemoveMarketplaceDialogOpen] = useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | undefined>();
 
@@ -108,6 +109,14 @@ const ContractsPage = () => {
     if (selectedContract) {
       deleteContract.mutate(selectedContract.id, {
         onSuccess: () => setDeleteDialogOpen(false),
+      });
+    }
+  };
+
+  const handleRemoveFromMarketplace = () => {
+    if (selectedContract) {
+      removeFromMarketplace.mutate(selectedContract.id, {
+        onSuccess: () => setRemoveMarketplaceDialogOpen(false),
       });
     }
   };
@@ -370,7 +379,7 @@ const ContractsPage = () => {
                                 <Edit className="w-4 h-4 mr-2" />
                                 Bewerken
                               </DropdownMenuItem>
-                              {!contract.is_on_marketplace && (
+                              {!contract.is_on_marketplace ? (
                                 <DropdownMenuItem
                                   onClick={() => {
                                     setSelectedContract(contract);
@@ -379,6 +388,16 @@ const ContractsPage = () => {
                                 >
                                   <Store className="w-4 h-4 mr-2" />
                                   Publiceer op marktplaats
+                                </DropdownMenuItem>
+                              ) : (
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    setSelectedContract(contract);
+                                    setRemoveMarketplaceDialogOpen(true);
+                                  }}
+                                >
+                                  <Store className="w-4 h-4 mr-2" />
+                                  Van marktplaats halen
                                 </DropdownMenuItem>
                               )}
                               <DropdownMenuSeparator />
@@ -446,6 +465,28 @@ const ContractsPage = () => {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Verwijderen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={removeMarketplaceDialogOpen} onOpenChange={setRemoveMarketplaceDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Van marktplaats halen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{selectedContract?.name}" wordt verwijderd van de marktplaats en is niet langer
+              zichtbaar voor leveranciers. Dit kan enkel zolang nog géén leverancier de lead heeft
+              gekocht.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuleren</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRemoveFromMarketplace}
+              disabled={removeFromMarketplace.isPending}
+            >
+              {removeFromMarketplace.isPending ? "Bezig..." : "Van marktplaats halen"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Contract } from "@/hooks/useContracts";
-import { Store, Users, Eye, Coins, AlertTriangle, Cpu } from "lucide-react";
+import { Store, Users, Eye, Coins, AlertTriangle, Cpu, Shield } from "lucide-react";
 
 interface PublishMarketplaceDialogProps {
   open: boolean;
@@ -52,14 +53,25 @@ const PublishMarketplaceDialog = ({
   isLoading,
 }: PublishMarketplaceDialogProps) => {
   const [maxSuppliers, setMaxSuppliers] = useState(3);
-  const [dataVisibility, setDataVisibility] = useState(1);
   const [deviceCount, setDeviceCount] = useState<string>("");
+
+  // Welke gegevens wilt u vrijgeven aan derden?
+  const [shareMonthlyCost, setShareMonthlyCost] = useState(false);
+  const [shareContractPdf, setShareContractPdf] = useState(false);
+  const [shareInvoicePdf, setShareInvoicePdf] = useState(false);
+
+  // Afgeleid: tier op basis van de selectie
+  const dataVisibility =
+    shareContractPdf || shareInvoicePdf ? 3 : shareMonthlyCost ? 2 : 1;
 
   useEffect(() => {
     if (open) {
       setDeviceCount(contract.device_count ? String(contract.device_count) : "");
       setMaxSuppliers(contract.max_suppliers || 3);
-      setDataVisibility(contract.data_visibility_level || 1);
+      const initialLevel = contract.data_visibility_level || 1;
+      setShareMonthlyCost(initialLevel >= 2);
+      setShareContractPdf(initialLevel >= 3);
+      setShareInvoicePdf(initialLevel >= 3);
     }
   }, [open, contract]);
 
@@ -137,27 +149,60 @@ const PublishMarketplaceDialog = ({
             </p>
           </div>
 
-          {/* Lead pakket */}
+          {/* Welke gegevens vrijgeven */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="flex items-center gap-2">
-                <Eye className="w-4 h-4" />
-                Lead-pakket
+                <Shield className="w-4 h-4" />
+                Welke gegevens wenst u vrij te geven aan derden?
               </Label>
               <Badge variant="secondary">{tier.label}</Badge>
             </div>
-            <Slider
-              value={[dataVisibility]}
-              onValueChange={([value]) => setDataVisibility(value)}
-              min={1}
-              max={3}
-              step={1}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground px-1">
-              <span>Basis</span>
-              <span>Premium</span>
-              <span>Elite</span>
+            <p className="text-xs text-muted-foreground">
+              Standaard ziet de leverancier ná het claimen enkel bedrijfsnaam, contactpersoon,
+              telefoon, e-mail en aantal toestellen. Vink hieronder de extra gegevens aan die u
+              wilt delen.
+            </p>
+            <div className="space-y-2 rounded-lg border border-border/60 p-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <Checkbox
+                  checked={shareMonthlyCost}
+                  onCheckedChange={(v) => setShareMonthlyCost(v === true)}
+                  className="mt-0.5"
+                />
+                <div className="space-y-0.5">
+                  <p className="text-sm font-medium">Maandkosten & contractwaarde</p>
+                  <p className="text-xs text-muted-foreground">
+                    Maand-, jaar- en totale contractwaarde worden zichtbaar.
+                  </p>
+                </div>
+              </label>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <Checkbox
+                  checked={shareContractPdf}
+                  onCheckedChange={(v) => setShareContractPdf(v === true)}
+                  className="mt-0.5"
+                />
+                <div className="space-y-0.5">
+                  <p className="text-sm font-medium">PDF's van contracten</p>
+                  <p className="text-xs text-muted-foreground">
+                    Originele contract-PDF's kunnen worden gedownload.
+                  </p>
+                </div>
+              </label>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <Checkbox
+                  checked={shareInvoicePdf}
+                  onCheckedChange={(v) => setShareInvoicePdf(v === true)}
+                  className="mt-0.5"
+                />
+                <div className="space-y-0.5">
+                  <p className="text-sm font-medium">PDF's van facturen</p>
+                  <p className="text-xs text-muted-foreground">
+                    Bijhorende facturen kunnen worden gedownload.
+                  </p>
+                </div>
+              </label>
             </div>
             <p className="text-xs text-muted-foreground">{tier.description}</p>
           </div>
