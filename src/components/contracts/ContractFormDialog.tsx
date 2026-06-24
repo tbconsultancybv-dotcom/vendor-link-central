@@ -483,6 +483,13 @@ const ContractFormDialog = ({
               )}
             />
 
+            {isEditing && contract && (
+              <>
+                <Separator />
+                <ContractDocuments contractId={contract.id} />
+              </>
+            )}
+
             <div className="flex justify-end gap-3 pt-4 border-t">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Annuleren
