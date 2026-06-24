@@ -379,7 +379,7 @@ const ContractsPage = () => {
                                 <Edit className="w-4 h-4 mr-2" />
                                 Bewerken
                               </DropdownMenuItem>
-                              {!contract.is_on_marketplace && (
+                              {!contract.is_on_marketplace ? (
                                 <DropdownMenuItem
                                   onClick={() => {
                                     setSelectedContract(contract);
@@ -388,6 +388,16 @@ const ContractsPage = () => {
                                 >
                                   <Store className="w-4 h-4 mr-2" />
                                   Publiceer op marktplaats
+                                </DropdownMenuItem>
+                              ) : (
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    setSelectedContract(contract);
+                                    setRemoveMarketplaceDialogOpen(true);
+                                  }}
+                                >
+                                  <Store className="w-4 h-4 mr-2" />
+                                  Van marktplaats halen
                                 </DropdownMenuItem>
                               )}
                               <DropdownMenuSeparator />
