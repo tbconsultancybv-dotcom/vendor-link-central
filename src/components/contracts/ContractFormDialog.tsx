@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 import { nl } from "date-fns/locale";
 import { CalendarIcon, X } from "lucide-react";
 import {
