@@ -36,6 +36,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Contract, ContractFormData, useCategories } from "@/hooks/useContracts";
+import ContractDocuments from "./ContractDocuments";
+import { Separator } from "@/components/ui/separator";
 
 const contractSchema = z.object({
   name: z.string().min(1, "Naam is verplicht"),
