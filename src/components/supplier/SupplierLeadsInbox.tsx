@@ -2,17 +2,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Building2,
-  FileText,
   Calendar,
   CreditCard,
   Inbox,
   Loader2,
-  Euro,
-  Eye,
-  EyeOff,
   Users,
   AlertCircle,
+  MapPin,
+  Tag,
+  Lock,
+  Sparkles,
+  Crown,
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -30,8 +30,13 @@ const formatDate = (d: string | null) =>
 
 const daysUntil = (d: string | null) => {
   if (!d) return null;
-  const diff = Math.ceil((new Date(d).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  return diff;
+  return Math.ceil((new Date(d).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+};
+
+const tierConfig: Record<number, { label: string; icon: typeof Lock; className: string }> = {
+  1: { label: "Basis", icon: Lock, className: "bg-muted text-muted-foreground" },
+  2: { label: "Premium", icon: Sparkles, className: "bg-primary/10 text-primary" },
+  3: { label: "Elite", icon: Crown, className: "bg-accent text-accent-foreground" },
 };
 
 const SupplierLeadsInbox = ({ limit, leadsController, onClaimed }: Props) => {
@@ -40,8 +45,7 @@ const SupplierLeadsInbox = ({ limit, leadsController, onClaimed }: Props) => {
   const { toast } = useToast();
   const [claiming, setClaiming] = useState<string | null>(null);
 
-  // Group open leads by contract so a supplier sees each unique contract once,
-  // while keeping the individual marketplace lead ids needed for claiming.
+  // Group open leads by contract so each contract appears once.
   const groupedLeads = openLeads.reduce((acc, lead) => {
     const contractId = lead.contract?.id ?? lead.id;
     if (!acc[contractId]) {
@@ -72,7 +76,7 @@ const SupplierLeadsInbox = ({ limit, leadsController, onClaimed }: Props) => {
     }
     toast({
       title: "Lead geclaimd!",
-      description: `${availableLead.credits_cost} credits afgeschreven. Contactgegevens nu zichtbaar.`,
+      description: `${availableLead.credits_cost} credits afgeschreven. Gegevens nu zichtbaar.`,
     });
     onClaimed?.();
   };
@@ -125,74 +129,66 @@ const SupplierLeadsInbox = ({ limit, leadsController, onClaimed }: Props) => {
               const totalSlots = c?.max_suppliers ?? group.leads.length;
               const openSlots = group.leads.filter((l) => l.status === "open").length;
               const days = daysUntil(c?.end_date ?? null);
-              const visibility = c?.data_visibility_level ?? 1;
+              const tier = tierConfig[(c?.data_visibility_level as 1 | 2 | 3) ?? 1];
+              const TierIcon = tier.icon;
+              const province = c?.customer?.province ?? "Onbekend";
+              const categoryName = c?.category?.name ?? "Algemeen";
+
               return (
                 <div
-                  key={lead.contract?.id ?? lead.id}
+                  key={c?.id ?? lead.id}
                   className="flex items-start justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors gap-4"
                 >
                   <div className="flex gap-4 min-w-0 flex-1">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Building2 className="w-5 h-5 text-primary" />
+                      <Lock className="w-5 h-5 text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <h3 className="font-medium text-foreground truncate">
-                          {c?.name ?? "Contract"}
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <h3 className="font-medium text-foreground">
+                          Lead · {categoryName}
                         </h3>
+                        <Badge className={`gap-1 ${tier.className}`}>
+                          <TierIcon className="w-3 h-3" />
+                          {tier.label}
+                        </Badge>
                         <Badge variant="secondary" className="gap-1">
                           <Users className="w-3 h-3" />
-                          {openSlots} van {totalSlots} leveranciers
-                        </Badge>
-                        <Badge variant="outline" className="gap-1">
-                          {visibility >= 2 ? (
-                            <Eye className="w-3 h-3" />
-                          ) : (
-                            <EyeOff className="w-3 h-3" />
-                          )}
-                          Inzage niveau {visibility}
+                          {openSlots} van {totalSlots} plaatsen
                         </Badge>
                       </div>
                       <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                        {c?.supplier_name && (
-                          <span className="flex items-center gap-1">
-                            <FileText className="w-3.5 h-3.5" />
-                            Huidige leverancier: {c.supplier_name}
-                          </span>
-                        )}
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5" />
+                          Provincie: <span className="text-foreground font-medium">{province}</span>
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Tag className="w-3.5 h-3.5" />
+                          {categoryName}
+                        </span>
                         {c?.end_date && (
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3.5 h-3.5" />
-                            Einddatum {formatDate(c.end_date)}
+                            Vervalt {formatDate(c.end_date)}
                             {days !== null && days >= 0 && (
                               <span className="text-warning">({days}d)</span>
                             )}
                           </span>
                         )}
-                        {(c?.monthly_cost || c?.yearly_cost) && (
-                          <span className="flex items-center gap-1">
-                            <Euro className="w-3.5 h-3.5" />
-                            {c.monthly_cost
-                              ? `€${Number(c.monthly_cost).toLocaleString("nl-BE")}/m`
-                              : `€${Number(c.yearly_cost).toLocaleString("nl-BE")}/j`}
-                          </span>
-                        )}
                       </div>
-                      {c?.description && (
-                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                          {c.description}
-                        </p>
-                      )}
+                      <p className="text-xs text-muted-foreground mt-2 italic">
+                        Klantgegevens worden vrijgegeven na het claimen van de lead.
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex flex-col items-end gap-2 shrink-0">
                     <Button
                       size="sm"
-                      onClick={() => handleClaim(lead.contract?.id ?? lead.id)}
-                      disabled={claiming === (lead.contract?.id ?? lead.id)}
+                      onClick={() => handleClaim(c?.id ?? lead.id)}
+                      disabled={claiming === (c?.id ?? lead.id)}
                     >
-                      {claiming === (lead.contract?.id ?? lead.id) ? (
+                      {claiming === (c?.id ?? lead.id) ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <CreditCard className="w-4 h-4" />
