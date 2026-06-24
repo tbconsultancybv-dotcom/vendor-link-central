@@ -19,6 +19,12 @@ const SupplierProfilePage = () => {
     company_name: "",
     full_name: "",
     phone: "",
+    email: "",
+    address_street: "",
+    address_number: "",
+    postal_code: "",
+    city: "",
+    province: "",
     is_supplier: false,
   });
 
