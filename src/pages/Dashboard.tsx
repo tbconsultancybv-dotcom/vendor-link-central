@@ -16,9 +16,11 @@ const Dashboard = () => {
 
   // Calculate stats
   const activeContracts = contracts.filter((c) => c.status === "active" || c.status === "expiring").length;
-  const actionRequired = notifications.filter((n) => !n.is_actioned && (n.priority === "high" || n.priority === "critical")).length;
-  const monthlyTotal = contracts.reduce((sum, c) => sum + c.monthly_cost, 0);
   const expiringContracts = contracts.filter((c) => c.status === "expiring").length;
+  const expiredContracts = contracts.filter((c) => c.status === "expired").length;
+  const notifActions = notifications.filter((n) => !n.is_actioned && (n.priority === "high" || n.priority === "critical")).length;
+  const actionRequired = expiredContracts + expiringContracts + notifActions;
+  const monthlyTotal = contracts.reduce((sum, c) => sum + c.monthly_cost, 0);
 
   return (
     <div className="min-h-screen bg-background">
