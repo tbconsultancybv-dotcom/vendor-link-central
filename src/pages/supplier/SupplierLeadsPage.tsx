@@ -15,6 +15,12 @@ import {
   Euro,
   FileText,
   Eye,
+  MapPin,
+  Cpu,
+  Lock,
+  Sparkles,
+  Crown,
+  FileLock2,
 } from "lucide-react";
 import { useState } from "react";
 import {
