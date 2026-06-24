@@ -22,7 +22,7 @@ const SupplierHome = () => {
     if (!user) return;
     (async () => {
       const [{ data: profile }, { count }] = await Promise.all([
-        supabase.from("profiles").select("credits").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("credits,is_supplier").eq("user_id", user.id).maybeSingle(),
         supabase
           .from("supplier_appointments")
           .select("*", { count: "exact", head: true })
@@ -30,6 +30,7 @@ const SupplierHome = () => {
           .gte("scheduled_date", new Date().toISOString()),
       ]);
       setCredits(profile?.credits ?? 0);
+      setIsSupplier(Boolean(profile?.is_supplier));
       setAppointments(count ?? 0);
     })();
   }, [user, myLeads.length]);
