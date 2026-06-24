@@ -1,0 +1,3 @@
+ALTER TABLE public.profiles 
+  ADD COLUMN IF NOT EXISTS sector TEXT,
+  ADD COLUMN IF NOT EXISTS province TEXT;

@@ -403,6 +403,8 @@ export type Database = {
           is_supplier: boolean | null
           ocr_enabled: boolean
           phone: string | null
+          province: string | null
+          sector: string | null
           updated_at: string
           user_id: string
         }
@@ -417,6 +419,8 @@ export type Database = {
           is_supplier?: boolean | null
           ocr_enabled?: boolean
           phone?: string | null
+          province?: string | null
+          sector?: string | null
           updated_at?: string
           user_id: string
         }
@@ -431,6 +435,8 @@ export type Database = {
           is_supplier?: boolean | null
           ocr_enabled?: boolean
           phone?: string | null
+          province?: string | null
+          sector?: string | null
           updated_at?: string
           user_id?: string
         }
