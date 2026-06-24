@@ -43,20 +43,38 @@ export const useSupplierLeads = () => {
   const [openLeads, setOpenLeads] = useState<SupplierLead[]>([]);
   const [myLeads, setMyLeads] = useState<SupplierLead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSupplier, setIsSupplier] = useState(false);
 
   const fetchLeads = useCallback(async () => {
-    if (!user) return;
-    const { data, error } = await supabase
-      .from("marketplace_leads")
-      .select(
-        `id,status,credits_cost,created_at,claimed_at,supplier_id,notes,
-         contract:contracts(id,name,supplier_name,description,start_date,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers,contact_email,contact_phone,responsible_name,notes,user_id)`
-      )
-      .order("created_at", { ascending: false });
+    if (!user) {
+      setOpenLeads([]);
+      setMyLeads([]);
+      setIsSupplier(false);
+      setLoading(false);
+      return;
+    }
+
+    const [{ data: profile }, { data, error }] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select("is_supplier")
+        .eq("user_id", user.id)
+        .maybeSingle(),
+      supabase
+        .from("marketplace_leads")
+        .select(
+          `id,status,credits_cost,created_at,claimed_at,supplier_id,notes,
+           contract:contracts(id,name,supplier_name,description,start_date,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers,contact_email,contact_phone,responsible_name,notes,user_id)`
+        )
+        .order("created_at", { ascending: false }),
+    ]);
+
+    const supplierMode = Boolean(profile?.is_supplier);
+    setIsSupplier(supplierMode);
 
     if (!error && data) {
       const all = data as unknown as SupplierLead[];
-      setOpenLeads(all.filter((l) => l.status === "open"));
+      setOpenLeads(supplierMode ? all.filter((l) => l.status === "open") : []);
       setMyLeads(all.filter((l) => l.supplier_id === user.id));
     }
     setLoading(false);
@@ -87,16 +105,20 @@ export const useSupplierLeads = () => {
     // Check credit balance
     const { data: profile } = await supabase
       .from("profiles")
-      .select("credits")
+      .select("credits,is_supplier")
       .eq("user_id", user.id)
       .maybeSingle();
+
+    if (!profile?.is_supplier) {
+      return { error: new Error("Zet eerst leveranciersmodus aan in je bedrijfsprofiel om leads te claimen.") };
+    }
 
     const balance = profile?.credits ?? 0;
     if (balance < credits) {
       return { error: new Error("Onvoldoende credits") };
     }
 
-    const { error } = await supabase
+    const { data: claimedLead, error } = await supabase
       .from("marketplace_leads")
       .update({
         supplier_id: user.id,
@@ -105,9 +127,14 @@ export const useSupplierLeads = () => {
         supplier_credits_paid: credits,
       })
       .eq("id", leadId)
-      .eq("status", "open");
+      .eq("status", "open")
+      .select("id")
+      .maybeSingle();
 
     if (error) return { error };
+    if (!claimedLead) {
+      return { error: new Error("Deze lead kon niet geclaimd worden. Mogelijk is hij al geclaimd of heb je geen toegang.") };
+    }
 
     const newBalance = balance - credits;
     await supabase
@@ -128,5 +155,5 @@ export const useSupplierLeads = () => {
     return { error: null };
   };
 
-  return { openLeads, myLeads, loading, claimLead, refresh: fetchLeads };
+  return { openLeads, myLeads, loading, isSupplier, claimLead, refresh: fetchLeads };
 };
