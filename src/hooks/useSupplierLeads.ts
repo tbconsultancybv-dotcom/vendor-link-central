@@ -8,6 +8,7 @@ export type SupplierLead = {
   credits_cost: number;
   created_at: string;
   claimed_at: string | null;
+  customer_id: string;
   supplier_id: string | null;
   notes: string | null;
   contract: {
@@ -63,7 +64,7 @@ export const useSupplierLeads = () => {
       supabase
         .from("marketplace_leads")
         .select(
-          `id,status,credits_cost,created_at,claimed_at,supplier_id,notes,
+          `id,status,credits_cost,created_at,claimed_at,customer_id,supplier_id,notes,
            contract:contracts(id,name,supplier_name,description,start_date,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers,contact_email,contact_phone,responsible_name,notes,user_id)`
         )
         .order("created_at", { ascending: false }),
@@ -74,7 +75,9 @@ export const useSupplierLeads = () => {
 
     if (!error && data) {
       const all = data as unknown as SupplierLead[];
-      setOpenLeads(supplierMode ? all.filter((l) => l.status === "open") : []);
+      setOpenLeads(
+        supplierMode ? all.filter((l) => l.status === "open" && l.customer_id !== user.id) : []
+      );
       setMyLeads(all.filter((l) => l.supplier_id === user.id));
     }
     setLoading(false);
