@@ -268,7 +268,14 @@ const ContractsPage = () => {
                     const daysUntilExpiry = getDaysUntilExpiry(contract.end_date);
                     
                     return (
-                      <TableRow key={contract.id} className="group">
+                      <TableRow
+                        key={contract.id}
+                        className="group cursor-pointer"
+                        onClick={() => {
+                          setSelectedContract(contract);
+                          setDetailsDialogOpen(true);
+                        }}
+                      >
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <div className={cn(
