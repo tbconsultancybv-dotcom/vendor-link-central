@@ -409,6 +409,12 @@ const ContractsPage = () => {
         isLoading={createContract.isPending || updateContract.isPending}
       />
 
+      <ContractDetailsDialog
+        open={detailsDialogOpen}
+        onOpenChange={setDetailsDialogOpen}
+        contract={selectedContract ?? null}
+      />
+
       {selectedContract && (
         <PublishMarketplaceDialog
           open={publishDialogOpen}
