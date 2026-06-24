@@ -61,7 +61,7 @@ const Settings = () => {
     <div className="min-h-screen bg-background">
       <Sidebar />
       <div className="ml-64">
-        <DashboardHeader />
+        <DashboardHeader title="Instellingen" />
         <main className="p-8 max-w-4xl">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground">Instellingen</h1>
