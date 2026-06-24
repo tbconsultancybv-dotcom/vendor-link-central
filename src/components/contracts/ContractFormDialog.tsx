@@ -409,6 +409,7 @@ const ContractFormDialog = ({
                         type="number"
                         step="0.01"
                         {...field}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
@@ -428,6 +429,7 @@ const ContractFormDialog = ({
                         type="number"
                         step="0.01"
                         {...field}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
