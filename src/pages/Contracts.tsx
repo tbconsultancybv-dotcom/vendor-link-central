@@ -113,6 +113,14 @@ const ContractsPage = () => {
     }
   };
 
+  const handleRemoveFromMarketplace = () => {
+    if (selectedContract) {
+      removeFromMarketplace.mutate(selectedContract.id, {
+        onSuccess: () => setRemoveMarketplaceDialogOpen(false),
+      });
+    }
+  };
+
   const handlePublishToMarketplace = (
     maxSuppliers: number,
     dataVisibility: number,
