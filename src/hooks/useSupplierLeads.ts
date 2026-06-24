@@ -23,11 +23,13 @@ export type SupplierLead = {
     contract_value: number | null;
     data_visibility_level: number | null;
     max_suppliers: number | null;
+    device_count: number | null;
     contact_email: string | null;
     contact_phone: string | null;
     responsible_name: string | null;
     notes: string | null;
     user_id: string | null;
+    category?: { id: string; name: string; icon: string | null; color: string | null } | null;
     customer?: {
       full_name: string | null;
       company_name: string | null;
