@@ -585,6 +585,10 @@ export type Database = {
         Args: { p_data_visibility: number; p_max_suppliers: number }
         Returns: number
       }
+      can_supplier_access_document: {
+        Args: { _object_name: string }
+        Returns: boolean
+      }
       get_lead_documents: {
         Args: { _lead_id: string }
         Returns: {
