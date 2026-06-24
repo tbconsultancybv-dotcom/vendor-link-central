@@ -33,7 +33,7 @@ const SupplierProfilePage = () => {
     (async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("company_name,full_name,phone,is_supplier")
+        .select("company_name,full_name,phone,email,address_street,address_number,postal_code,city,province,is_supplier")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data) {
@@ -41,6 +41,12 @@ const SupplierProfilePage = () => {
           company_name: data.company_name ?? "",
           full_name: data.full_name ?? "",
           phone: data.phone ?? "",
+          email: data.email ?? "",
+          address_street: data.address_street ?? "",
+          address_number: data.address_number ?? "",
+          postal_code: data.postal_code ?? "",
+          city: data.city ?? "",
+          province: data.province ?? "",
           is_supplier: Boolean(data.is_supplier),
         });
       }
