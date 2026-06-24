@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Contract } from "@/hooks/useContracts";
-import { Store, Users, Eye, Coins, AlertTriangle, Cpu } from "lucide-react";
+import { Store, Users, Eye, Coins, AlertTriangle, Cpu, Shield } from "lucide-react";
 
 interface PublishMarketplaceDialogProps {
   open: boolean;
