@@ -60,9 +60,14 @@ const PublishMarketplaceDialog = ({
   const [shareContractPdf, setShareContractPdf] = useState(false);
   const [shareInvoicePdf, setShareInvoicePdf] = useState(false);
 
+  // GDPR-toestemming (verplicht)
+  const [gdprConsent, setGdprConsent] = useState(false);
+
   // Afgeleid: tier op basis van de selectie
   const dataVisibility =
     shareContractPdf || shareInvoicePdf ? 3 : shareMonthlyCost ? 2 : 1;
+
+  const categoryName = contract.category?.name?.trim() || "uw sector";
 
   useEffect(() => {
     if (open) {
@@ -72,6 +77,7 @@ const PublishMarketplaceDialog = ({
       setShareMonthlyCost(initialLevel >= 2);
       setShareContractPdf(initialLevel >= 3);
       setShareInvoicePdf(initialLevel >= 3);
+      setGdprConsent(false);
     }
   }, [open, contract]);
 
@@ -230,6 +236,33 @@ const PublishMarketplaceDialog = ({
               vrijgegeven volgens het gekozen pakket.
             </span>
           </div>
+
+          {/* GDPR / wettelijke toestemming */}
+          <div className="rounded-lg border border-warning/40 bg-warning/5 p-4">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <Checkbox
+                checked={gdprConsent}
+                onCheckedChange={(v) => setGdprConsent(v === true)}
+                className="mt-0.5"
+              />
+              <div className="space-y-1">
+                <p className="text-sm font-medium">
+                  Toestemming voor het delen van persoonsgegevens (verplicht)
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Door hier te klikken, geeft u toestemming om bedrijfsnaam,
+                  contactgegevens, e-mailadres en telefoonnummer (alle
+                  persoonsgegevens), alsook de geüploade contracten en facturen
+                  te delen met geverifieerde leveranciers in de sector{" "}
+                  <span className="font-medium text-foreground">
+                    {categoryName}
+                  </span>
+                  . U kunt deze toestemming op elk moment intrekken door het
+                  contract van de marktplaats te halen.
+                </p>
+              </div>
+            </label>
+          </div>
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t">
@@ -244,7 +277,7 @@ const PublishMarketplaceDialog = ({
                 deviceCount ? Number(deviceCount) : null
               )
             }
-            disabled={isLoading}
+            disabled={isLoading || !gdprConsent}
           >
             {isLoading ? "Publiceren..." : "Publiceren op marktplaats"}
           </Button>
