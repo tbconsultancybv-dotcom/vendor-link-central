@@ -59,6 +59,57 @@ const SupplierLeadsPage = () => {
   const { myLeads } = supplierLeads;
   const [selected, setSelected] = useState<SupplierLead | null>(null);
   const [activeTab, setActiveTab] = useState("inbox");
+  const [leadDocs, setLeadDocs] = useState<LeadDocument[]>([]);
+  const [docsLoading, setDocsLoading] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!selected) {
+      setLeadDocs([]);
+      return;
+    }
+    const tier = (selected.contract?.data_visibility_level ?? 1) as number;
+    if (tier < 3) {
+      setLeadDocs([]);
+      return;
+    }
+    let cancelled = false;
+    setDocsLoading(true);
+    supabase
+      .rpc("get_lead_documents", { _lead_id: selected.id })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          toast({
+            title: "Documenten niet beschikbaar",
+            description: error.message,
+            variant: "destructive",
+          });
+          setLeadDocs([]);
+        } else {
+          setLeadDocs((data as LeadDocument[]) ?? []);
+        }
+        setDocsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selected, toast]);
+
+  const openDocument = async (doc: LeadDocument) => {
+    const { data, error } = await supabase.storage
+      .from("documents")
+      .createSignedUrl(doc.file_path, 60 * 10);
+    if (error || !data?.signedUrl) {
+      toast({
+        title: "Kon document niet openen",
+        description: error?.message ?? "Onbekende fout",
+        variant: "destructive",
+      });
+      return;
+    }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <>
