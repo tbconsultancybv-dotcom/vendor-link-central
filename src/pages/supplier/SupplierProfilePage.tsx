@@ -19,6 +19,12 @@ const SupplierProfilePage = () => {
     company_name: "",
     full_name: "",
     phone: "",
+    email: "",
+    address_street: "",
+    address_number: "",
+    postal_code: "",
+    city: "",
+    province: "",
     is_supplier: false,
   });
 
@@ -27,7 +33,7 @@ const SupplierProfilePage = () => {
     (async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("company_name,full_name,phone,is_supplier")
+        .select("company_name,full_name,phone,email,address_street,address_number,postal_code,city,province,is_supplier")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data) {
@@ -35,6 +41,12 @@ const SupplierProfilePage = () => {
           company_name: data.company_name ?? "",
           full_name: data.full_name ?? "",
           phone: data.phone ?? "",
+          email: data.email ?? "",
+          address_street: data.address_street ?? "",
+          address_number: data.address_number ?? "",
+          postal_code: data.postal_code ?? "",
+          city: data.city ?? "",
+          province: data.province ?? "",
           is_supplier: Boolean(data.is_supplier),
         });
       }
@@ -106,10 +118,53 @@ const SupplierProfilePage = () => {
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label>E-mailadres</Label>
+                    <Input
+                      type="email"
+                      value={profile.email}
+                      onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label>Telefoon</Label>
                     <Input
                       value={profile.phone}
                       onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label>Straat</Label>
+                    <Input
+                      value={profile.address_street}
+                      onChange={(e) => setProfile({ ...profile, address_street: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Huisnummer</Label>
+                    <Input
+                      value={profile.address_number}
+                      onChange={(e) => setProfile({ ...profile, address_number: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Postcode</Label>
+                    <Input
+                      value={profile.postal_code}
+                      onChange={(e) => setProfile({ ...profile, postal_code: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Stad</Label>
+                    <Input
+                      value={profile.city}
+                      onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Provincie</Label>
+                    <Input
+                      value={profile.province}
+                      onChange={(e) => setProfile({ ...profile, province: e.target.value })}
                     />
                   </div>
                 </div>

@@ -393,7 +393,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address_number: string | null
+          address_street: string | null
           avatar_url: string | null
+          city: string | null
           company_name: string | null
           created_at: string
           credits: number | null
@@ -403,13 +406,17 @@ export type Database = {
           is_supplier: boolean | null
           ocr_enabled: boolean
           phone: string | null
+          postal_code: string | null
           province: string | null
           sector: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          address_number?: string | null
+          address_street?: string | null
           avatar_url?: string | null
+          city?: string | null
           company_name?: string | null
           created_at?: string
           credits?: number | null
@@ -419,13 +426,17 @@ export type Database = {
           is_supplier?: boolean | null
           ocr_enabled?: boolean
           phone?: string | null
+          postal_code?: string | null
           province?: string | null
           sector?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          address_number?: string | null
+          address_street?: string | null
           avatar_url?: string | null
+          city?: string | null
           company_name?: string | null
           created_at?: string
           credits?: number | null
@@ -435,6 +446,7 @@ export type Database = {
           is_supplier?: boolean | null
           ocr_enabled?: boolean
           phone?: string | null
+          postal_code?: string | null
           province?: string | null
           sector?: string | null
           updated_at?: string
