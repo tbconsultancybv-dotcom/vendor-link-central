@@ -69,11 +69,12 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { openStorageFileInNewTab } from "@/lib/storageFiles";
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
 
 const DocumentsPage = () => {
-  const { documents, isLoading, uploadDocument, linkToContract, deleteDocument, getDownloadUrl } = useDocuments();
+  const { documents, isLoading, uploadDocument, linkToContract, deleteDocument } = useDocuments();
   const { contracts } = useContracts();
 
   // UI State
@@ -137,13 +138,7 @@ const DocumentsPage = () => {
     
     setDownloadingDocId(doc.id);
     try {
-      const blobUrl = await getDownloadUrl(doc.file_path);
-      
-      // Open in new tab
-      window.open(blobUrl, "_blank");
-      
-      // Clean up blob URL after a delay
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+      await openStorageFileInNewTab(doc.file_path);
     } catch (error) {
       console.error("Download failed:", error);
     } finally {
