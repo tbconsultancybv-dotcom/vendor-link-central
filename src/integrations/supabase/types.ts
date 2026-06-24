@@ -585,6 +585,17 @@ export type Database = {
         Args: { p_data_visibility: number; p_max_suppliers: number }
         Returns: number
       }
+      get_lead_documents: {
+        Args: { _lead_id: string }
+        Returns: {
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id: string
+          uploaded_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -593,6 +604,27 @@ export type Database = {
         Returns: boolean
       }
       is_supplier: { Args: { _user_id: string }; Returns: boolean }
+      list_marketplace_listings: {
+        Args: never
+        Returns: {
+          category_color: string
+          category_icon: string
+          category_id: string
+          category_name: string
+          claimed_at: string
+          contract_id: string
+          created_at: string
+          credits_cost: number
+          data_visibility_level: number
+          device_count: number
+          end_date: string
+          lead_id: string
+          province: string
+          sector: string
+          status: Database["public"]["Enums"]["lead_status"]
+          supplier_id: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "manager" | "viewer" | "finance"
