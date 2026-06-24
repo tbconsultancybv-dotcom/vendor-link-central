@@ -137,12 +137,7 @@ const DocumentsPage = () => {
     
     setDownloadingDocId(doc.id);
     try {
-      const url = await getDownloadUrl(doc.file_path);
-      
-      // Fetch the file and create a blob URL to avoid ad-blocker issues
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
+      const blobUrl = await getDownloadUrl(doc.file_path);
       
       // Open in new tab
       window.open(blobUrl, "_blank");

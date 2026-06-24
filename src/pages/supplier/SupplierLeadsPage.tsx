@@ -33,6 +33,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { openStorageFileInNewTab } from "@/lib/storageFiles";
 
 type LeadDocument = {
   id: string;
@@ -97,18 +98,15 @@ const SupplierLeadsPage = () => {
   }, [selected, toast]);
 
   const openDocument = async (doc: LeadDocument) => {
-    const { data, error } = await supabase.storage
-      .from("documents")
-      .createSignedUrl(doc.file_path, 60 * 10);
-    if (error || !data?.signedUrl) {
+    try {
+      await openStorageFileInNewTab(doc.file_path);
+    } catch (error) {
       toast({
         title: "Kon document niet openen",
-        description: error?.message ?? "Onbekende fout",
+        description: (error as Error).message,
         variant: "destructive",
       });
-      return;
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
