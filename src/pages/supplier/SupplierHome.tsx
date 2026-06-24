@@ -16,6 +16,7 @@ const SupplierHome = () => {
   const { openLeads, myLeads } = useSupplierLeads();
   const [credits, setCredits] = useState<number>(0);
   const [appointments, setAppointments] = useState<number>(0);
+  const [isSupplier, setIsSupplier] = useState<boolean>(true);
 
   useEffect(() => {
     if (!user) return;
