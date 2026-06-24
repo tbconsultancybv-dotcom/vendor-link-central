@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Users, Calendar, Star, CreditCard } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Users, Calendar, Star, CreditCard, AlertCircle, Building2 } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatsCard from "@/components/dashboard/StatsCard";
 import SupplierLeadsInbox from "@/components/supplier/SupplierLeadsInbox";
@@ -8,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSupplierLeads } from "@/hooks/useSupplierLeads";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Inbox, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const SupplierHome = () => {
   const { user } = useAuth();
