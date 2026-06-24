@@ -85,13 +85,14 @@ export const useContracts = () => {
 
   const createContract = useMutation({
     mutationFn: async (data: ContractFormData) => {
-      if (!user) throw new Error("Not authenticated");
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) throw new Error("Niet ingelogd. Log opnieuw in en probeer het opnieuw.");
 
       const { data: newContract, error } = await supabase
         .from("contracts")
         .insert({
           ...data,
-          user_id: user.id,
+          user_id: currentUser.id,
         })
         .select()
         .single();
