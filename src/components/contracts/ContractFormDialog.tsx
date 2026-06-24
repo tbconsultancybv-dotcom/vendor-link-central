@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 import { nl } from "date-fns/locale";
 import { CalendarIcon, X } from "lucide-react";
 import {
@@ -60,6 +60,71 @@ const contractSchema = z.object({
 });
 
 type ContractFormValues = z.infer<typeof contractSchema>;
+
+const DateInputField = ({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: Date | undefined;
+  onChange: (d: Date | undefined) => void;
+}) => {
+  const [text, setText] = useState(value ? format(value, "dd-MM-yyyy") : "");
+
+  useEffect(() => {
+    setText(value ? format(value, "dd-MM-yyyy") : "");
+  }, [value]);
+
+  const commit = (raw: string) => {
+    const cleaned = raw.trim();
+    if (!cleaned) {
+      onChange(undefined);
+      return;
+    }
+    const formats = ["dd-MM-yyyy", "d-M-yyyy", "dd/MM/yyyy", "d/M/yyyy"];
+    for (const f of formats) {
+      const parsed = parse(cleaned, f, new Date());
+      if (isValid(parsed)) {
+        onChange(parsed);
+        return;
+      }
+    }
+  };
+
+  return (
+    <FormItem className="flex flex-col">
+      <FormLabel>{label}</FormLabel>
+      <div className="flex gap-2">
+        <FormControl>
+          <Input
+            placeholder="dd-mm-jjjj"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onBlur={(e) => commit(e.target.value)}
+          />
+        </FormControl>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button type="button" variant="outline" size="icon" className="shrink-0">
+              <CalendarIcon className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
+            <Calendar
+              mode="single"
+              selected={value}
+              onSelect={(d) => onChange(d)}
+              initialFocus
+              className="pointer-events-auto"
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+      <FormMessage />
+    </FormItem>
+  );
+};
 
 interface ContractFormDialogProps {
   open: boolean;
@@ -261,38 +326,7 @@ const ContractFormDialog = ({
                 control={form.control}
                 name="start_date"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Startdatum *</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "d MMMM yyyy", { locale: nl })
-                            ) : (
-                              <span>Selecteer datum</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
+                  <DateInputField label="Startdatum *" value={field.value} onChange={field.onChange} />
                 )}
               />
 
@@ -300,38 +334,7 @@ const ContractFormDialog = ({
                 control={form.control}
                 name="end_date"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Einddatum *</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "d MMMM yyyy", { locale: nl })
-                            ) : (
-                              <span>Selecteer datum</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
+                  <DateInputField label="Einddatum *" value={field.value} onChange={field.onChange} />
                 )}
               />
             </div>
@@ -406,6 +409,7 @@ const ContractFormDialog = ({
                         type="number"
                         step="0.01"
                         {...field}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
@@ -425,6 +429,7 @@ const ContractFormDialog = ({
                         type="number"
                         step="0.01"
                         {...field}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
