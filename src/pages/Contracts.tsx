@@ -339,7 +339,7 @@ const ContractsPage = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100">
@@ -347,6 +347,15 @@ const ContractsPage = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setSelectedContract(contract);
+                                  setDetailsDialogOpen(true);
+                                }}
+                              >
+                                <Eye className="w-4 h-4 mr-2" />
+                                Bekijken
+                              </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => {
                                   setSelectedContract(contract);
