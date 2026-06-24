@@ -237,6 +237,62 @@ export const useContracts = () => {
     },
   });
 
+  const removeFromMarketplace = useMutation({
+    mutationFn: async (contractId: string) => {
+      if (!user) throw new Error("Not authenticated");
+
+      // Blokkeer als er al een leverancier de lead heeft gekocht/in behandeling/afgerond
+      const { data: activeLeads, error: checkError } = await supabase
+        .from("marketplace_leads")
+        .select("id, status")
+        .eq("contract_id", contractId)
+        .in("status", ["claimed", "in_progress", "completed"]);
+
+      if (checkError) throw checkError;
+      if (activeLeads && activeLeads.length > 0) {
+        throw new Error(
+          "Eén of meer leveranciers hebben deze lead al aangekocht. Het contract kan niet meer van de marktplaats worden gehaald."
+        );
+      }
+
+      // Verwijder openstaande leads
+      const { error: deleteError } = await supabase
+        .from("marketplace_leads")
+        .delete()
+        .eq("contract_id", contractId)
+        .eq("status", "open");
+
+      if (deleteError) throw deleteError;
+
+      // Markeer contract als niet meer op marktplaats
+      const { error: contractError } = await supabase
+        .from("contracts")
+        .update({
+          is_on_marketplace: false,
+          marketplace_date: null,
+        })
+        .eq("id", contractId);
+
+      if (contractError) throw contractError;
+
+      return { success: true };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["contracts"] });
+      toast({
+        title: "Van marktplaats gehaald",
+        description: "Het contract is niet langer zichtbaar voor leveranciers.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Verwijderen mislukt",
+        description: error.message,
+      });
+    },
+  });
+
   return {
     contracts: contractsQuery.data || [],
     isLoading: contractsQuery.isLoading,
@@ -245,6 +301,7 @@ export const useContracts = () => {
     updateContract,
     deleteContract,
     publishToMarketplace,
+    removeFromMarketplace,
   };
 };
 
