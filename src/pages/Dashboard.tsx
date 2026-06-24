@@ -16,9 +16,11 @@ const Dashboard = () => {
 
   // Calculate stats
   const activeContracts = contracts.filter((c) => c.status === "active" || c.status === "expiring").length;
-  const actionRequired = notifications.filter((n) => !n.is_actioned && (n.priority === "high" || n.priority === "critical")).length;
-  const monthlyTotal = contracts.reduce((sum, c) => sum + c.monthly_cost, 0);
   const expiringContracts = contracts.filter((c) => c.status === "expiring").length;
+  const expiredContracts = contracts.filter((c) => c.status === "expired").length;
+  const notifActions = notifications.filter((n) => !n.is_actioned && (n.priority === "high" || n.priority === "critical")).length;
+  const actionRequired = expiredContracts + expiringContracts + notifActions;
+  const monthlyTotal = contracts.reduce((sum, c) => sum + c.monthly_cost, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -47,10 +49,16 @@ const Dashboard = () => {
             <StatsCard
               title="Actie Vereist"
               value={isLoading ? "..." : actionRequired}
-              change={actionRequired > 0 ? "Bekijk notificaties" : "Alles onder controle"}
+              change={
+                expiredContracts > 0 || expiringContracts > 0
+                  ? `${expiredContracts} verlopen · ${expiringContracts} verloopt binnenkort`
+                  : actionRequired > 0
+                    ? "Bekijk notificaties"
+                    : "Alles onder controle"
+              }
               changeType={actionRequired > 0 ? "negative" : "positive"}
               icon={AlertTriangle}
-              iconColor="text-warning"
+              iconColor={expiredContracts > 0 ? "text-destructive" : "text-warning"}
             />
             <StatsCard
               title="Maandkosten"
