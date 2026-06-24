@@ -469,6 +469,28 @@ const ContractsPage = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={removeMarketplaceDialogOpen} onOpenChange={setRemoveMarketplaceDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Van marktplaats halen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{selectedContract?.name}" wordt verwijderd van de marktplaats en is niet langer
+              zichtbaar voor leveranciers. Dit kan enkel zolang nog géén leverancier de lead heeft
+              gekocht.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuleren</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRemoveFromMarketplace}
+              disabled={removeFromMarketplace.isPending}
+            >
+              {removeFromMarketplace.isPending ? "Bezig..." : "Van marktplaats halen"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
