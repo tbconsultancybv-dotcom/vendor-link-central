@@ -61,7 +61,7 @@ import { cn } from "@/lib/utils";
 
 const ContractsPage = () => {
   const navigate = useNavigate();
-  const { contracts, isLoading, createContract, updateContract, deleteContract, publishToMarketplace } = useContracts();
+  const { contracts, isLoading, createContract, updateContract, deleteContract, publishToMarketplace, removeFromMarketplace } = useContracts();
   const { data: categories = [] } = useCategories();
 
   // UI State
@@ -73,6 +73,7 @@ const ContractsPage = () => {
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [removeMarketplaceDialogOpen, setRemoveMarketplaceDialogOpen] = useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | undefined>();
 
