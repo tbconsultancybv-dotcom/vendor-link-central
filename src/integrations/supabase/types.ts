@@ -401,6 +401,7 @@ export type Database = {
           full_name: string | null
           id: string
           is_supplier: boolean | null
+          ocr_enabled: boolean
           phone: string | null
           updated_at: string
           user_id: string
@@ -414,6 +415,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_supplier?: boolean | null
+          ocr_enabled?: boolean
           phone?: string | null
           updated_at?: string
           user_id: string
@@ -427,6 +429,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_supplier?: boolean | null
+          ocr_enabled?: boolean
           phone?: string | null
           updated_at?: string
           user_id?: string
