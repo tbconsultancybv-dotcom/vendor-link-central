@@ -16,11 +16,25 @@ export type SupplierLead = {
     supplier_name: string | null;
     description: string | null;
     end_date: string | null;
+    start_date: string | null;
     monthly_cost: number | null;
     yearly_cost: number | null;
     contract_value: number | null;
     data_visibility_level: number | null;
     max_suppliers: number | null;
+    contact_email: string | null;
+    contact_phone: string | null;
+    responsible_name: string | null;
+    notes: string | null;
+    user_id: string | null;
+    customer?: {
+      full_name: string | null;
+      company_name: string | null;
+      email: string | null;
+      phone: string | null;
+      sector: string | null;
+      province: string | null;
+    } | null;
   } | null;
 };
 
