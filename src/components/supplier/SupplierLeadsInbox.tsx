@@ -11,6 +11,7 @@ import {
   Euro,
   Eye,
   EyeOff,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -35,11 +36,27 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
   const { toast } = useToast();
   const [claiming, setClaiming] = useState<string | null>(null);
 
-  const shown = limit ? openLeads.slice(0, limit) : openLeads;
+  // Group open leads by contract so a supplier sees each unique contract once,
+  // while keeping the individual marketplace lead ids needed for claiming.
+  const groupedLeads = openLeads.reduce((acc, lead) => {
+    const contractId = lead.contract?.id ?? lead.id;
+    if (!acc[contractId]) {
+      acc[contractId] = { leads: [], contract: lead.contract };
+    }
+    acc[contractId].leads.push(lead);
+    return acc;
+  }, {} as Record<string, { leads: SupplierLead[]; contract: SupplierLead["contract"] }>);
 
-  const handleClaim = async (lead: SupplierLead) => {
-    setClaiming(lead.id);
-    const { error } = await claimLead(lead.id, lead.credits_cost);
+  const shown = Object.values(groupedLeads).slice(0, limit ?? undefined);
+  const totalOpenCount = Object.values(groupedLeads).length;
+
+  const handleClaim = async (contractId: string) => {
+    const group = groupedLeads[contractId];
+    if (!group) return;
+    const availableLead = group.leads.find((l) => l.status === "open");
+    if (!availableLead) return;
+    setClaiming(contractId);
+    const { error } = await claimLead(availableLead.id, availableLead.credits_cost);
     setClaiming(null);
     if (error) {
       toast({
@@ -51,7 +68,7 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
     }
     toast({
       title: "Lead geclaimd!",
-      description: `${lead.credits_cost} credits afgeschreven. Contactgegevens nu zichtbaar.`,
+      description: `${availableLead.credits_cost} credits afgeschreven. Contactgegevens nu zichtbaar.`,
     });
   };
 
@@ -61,8 +78,8 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <Inbox className="w-5 h-5 text-primary" />
           Nieuwe Leads
-          {openLeads.length > 0 && (
-            <Badge className="bg-accent text-accent-foreground">{openLeads.length}</Badge>
+          {totalOpenCount > 0 && (
+            <Badge className="bg-accent text-accent-foreground">{totalOpenCount}</Badge>
           )}
         </CardTitle>
         {limit && (
@@ -86,13 +103,16 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
           </div>
         ) : (
           <div className="space-y-4">
-            {shown.map((lead) => {
-              const c = lead.contract;
+            {shown.map((group) => {
+              const c = group.contract;
+              const lead = group.leads[0];
+              const totalSlots = c?.max_suppliers ?? group.leads.length;
+              const openSlots = group.leads.filter((l) => l.status === "open").length;
               const days = daysUntil(c?.end_date ?? null);
               const visibility = c?.data_visibility_level ?? 1;
               return (
                 <div
-                  key={lead.id}
+                  key={lead.contract?.id ?? lead.id}
                   className="flex items-start justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors gap-4"
                 >
                   <div className="flex gap-4 min-w-0 flex-1">
@@ -105,6 +125,10 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
                           {c?.name ?? "Contract"}
                         </h3>
                         <Badge variant="secondary" className="gap-1">
+                          <Users className="w-3 h-3" />
+                          {openSlots} van {totalSlots} leveranciers
+                        </Badge>
+                        <Badge variant="outline" className="gap-1">
                           {visibility >= 2 ? (
                             <Eye className="w-3 h-3" />
                           ) : (
@@ -147,8 +171,12 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
                   </div>
 
                   <div className="flex flex-col items-end gap-2 shrink-0">
-                    <Button size="sm" onClick={() => handleClaim(lead)} disabled={claiming === lead.id}>
-                      {claiming === lead.id ? (
+                    <Button
+                      size="sm"
+                      onClick={() => handleClaim(lead.contract?.id ?? lead.id)}
+                      disabled={claiming === (lead.contract?.id ?? lead.id)}
+                    >
+                      {claiming === (lead.contract?.id ?? lead.id) ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <CreditCard className="w-4 h-4" />
