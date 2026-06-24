@@ -26,7 +26,7 @@ const navItems = [
 ];
 
 const bottomItems = [
-  { icon: Settings, label: "Instellingen", href: "/dashboard" },
+  { icon: Settings, label: "Instellingen", href: "/dashboard/settings" },
   { icon: HelpCircle, label: "Help", href: "/dashboard" },
 ];
 

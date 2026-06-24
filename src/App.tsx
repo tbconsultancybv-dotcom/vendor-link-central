@@ -13,6 +13,7 @@ import Documents from "./pages/Documents";
 import Reports from "./pages/Reports";
 import Categories from "./pages/Categories";
 import SupplierDashboard from "./pages/SupplierDashboard";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/dashboard/documents" element={<Documents />} />
             <Route path="/dashboard/reports" element={<Reports />} />
             <Route path="/dashboard/categories" element={<Categories />} />
+            <Route path="/dashboard/settings" element={<Settings />} />
             <Route path="/supplier" element={<SupplierDashboard />} />
             <Route path="/supplier/*" element={<SupplierDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
