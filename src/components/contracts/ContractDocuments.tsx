@@ -20,7 +20,7 @@ const formatSize = (bytes: number | null) => {
 };
 
 const ContractDocuments = ({ contractId, title = "Documenten" }: ContractDocumentsProps) => {
-  const { uploadDocument, deleteDocument, getDownloadUrl } = useDocuments();
+  const { uploadDocument, deleteDocument } = useDocuments();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [openingId, setOpeningId] = useState<string | null>(null);
