@@ -40,6 +40,7 @@ import {
 import { useContracts, useCategories, Contract, ContractFormData } from "@/hooks/useContracts";
 import ContractFormDialog from "@/components/contracts/ContractFormDialog";
 import PublishMarketplaceDialog from "@/components/contracts/PublishMarketplaceDialog";
+import ContractDetailsDialog from "@/components/contracts/ContractDetailsDialog";
 import {
   Search,
   Filter,
@@ -54,6 +55,7 @@ import {
   CheckCircle,
   Clock,
   Plus,
+  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -71,6 +73,7 @@ const ContractsPage = () => {
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | undefined>();
 
   // Filtered contracts
@@ -265,7 +268,14 @@ const ContractsPage = () => {
                     const daysUntilExpiry = getDaysUntilExpiry(contract.end_date);
                     
                     return (
-                      <TableRow key={contract.id} className="group">
+                      <TableRow
+                        key={contract.id}
+                        className="group cursor-pointer"
+                        onClick={() => {
+                          setSelectedContract(contract);
+                          setDetailsDialogOpen(true);
+                        }}
+                      >
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <div className={cn(
@@ -329,7 +339,7 @@ const ContractsPage = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100">
@@ -337,6 +347,15 @@ const ContractsPage = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setSelectedContract(contract);
+                                  setDetailsDialogOpen(true);
+                                }}
+                              >
+                                <Eye className="w-4 h-4 mr-2" />
+                                Bekijken
+                              </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => {
                                   setSelectedContract(contract);
@@ -388,6 +407,12 @@ const ContractsPage = () => {
         contract={selectedContract}
         onSubmit={selectedContract ? handleUpdateContract : handleCreateContract}
         isLoading={createContract.isPending || updateContract.isPending}
+      />
+
+      <ContractDetailsDialog
+        open={detailsDialogOpen}
+        onOpenChange={setDetailsDialogOpen}
+        contract={selectedContract ?? null}
       />
 
       {selectedContract && (
