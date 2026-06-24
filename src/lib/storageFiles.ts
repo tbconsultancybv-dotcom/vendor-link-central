@@ -32,22 +32,29 @@ export const createStorageBlobUrl = async (
   return URL.createObjectURL(signedBlob);
 };
 
+const getFilename = (filePath: string) => {
+  const parts = filePath.split("/");
+  return parts[parts.length - 1] || "document";
+};
+
 export const openStorageFileInNewTab = async (filePath: string, bucket = DEFAULT_BUCKET) => {
-  const popup = window.open("about:blank", "_blank");
+  const blobUrl = await createStorageBlobUrl(filePath, bucket);
+  const filename = getFilename(filePath);
 
-  try {
-    const blobUrl = await createStorageBlobUrl(filePath, bucket);
+  // Try opening in a new tab first (works in top-level windows).
+  const newWindow = window.open(blobUrl, "_blank", "noopener,noreferrer");
 
-    if (popup) {
-      popup.opener = null;
-      popup.location.href = blobUrl;
-    } else {
-      window.open(blobUrl, "_blank", "noopener,noreferrer");
-    }
-
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
-  } catch (error) {
-    popup?.close();
-    throw error;
+  // In sandboxed iframes (Lovable preview), navigating a popup to a blob: URL
+  // from a different origin is blocked. Fall back to an anchor-triggered download.
+  if (!newWindow) {
+    const anchor = document.createElement("a");
+    anchor.href = blobUrl;
+    anchor.download = filename;
+    anchor.rel = "noopener noreferrer";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
   }
+
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
 };
