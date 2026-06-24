@@ -28,6 +28,7 @@ export interface Contract {
   marketplace_date: string | null;
   max_suppliers: number;
   data_visibility_level: number;
+  device_count: number | null;
   created_at: string;
   updated_at: string;
   category?: {
