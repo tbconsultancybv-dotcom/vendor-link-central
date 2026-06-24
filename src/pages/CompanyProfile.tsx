@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import Sidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -89,12 +89,14 @@ const CompanyProfile = () => {
   };
 
   return (
-    <DashboardLayout>
-      <DashboardHeader
-        title="Bedrijfsprofiel"
-        subtitle="Deze gegevens worden gebruikt om relevante leveranciers te matchen"
-      />
-      <div className="p-6 max-w-3xl">
+    <div className="min-h-screen bg-background">
+      <Sidebar />
+      <div className="ml-64">
+        <DashboardHeader
+          title="Bedrijfsprofiel"
+          subtitle="Deze gegevens worden gebruikt om relevante leveranciers te matchen"
+        />
+        <main className="p-8 max-w-3xl">
         <Card>
           <CardHeader>
             <div className="flex gap-3">
