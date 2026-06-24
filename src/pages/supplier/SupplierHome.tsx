@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Users, Calendar, Star, CreditCard } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Users, Calendar, Star, CreditCard, AlertCircle, Building2 } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatsCard from "@/components/dashboard/StatsCard";
 import SupplierLeadsInbox from "@/components/supplier/SupplierLeadsInbox";
@@ -8,18 +9,20 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSupplierLeads } from "@/hooks/useSupplierLeads";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Inbox, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const SupplierHome = () => {
   const { user } = useAuth();
   const { openLeads, myLeads } = useSupplierLeads();
   const [credits, setCredits] = useState<number>(0);
   const [appointments, setAppointments] = useState<number>(0);
+  const [isSupplier, setIsSupplier] = useState<boolean>(true);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       const [{ data: profile }, { count }] = await Promise.all([
-        supabase.from("profiles").select("credits").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("credits,is_supplier").eq("user_id", user.id).maybeSingle(),
         supabase
           .from("supplier_appointments")
           .select("*", { count: "exact", head: true })
@@ -27,6 +30,7 @@ const SupplierHome = () => {
           .gte("scheduled_date", new Date().toISOString()),
       ]);
       setCredits(profile?.credits ?? 0);
+      setIsSupplier(Boolean(profile?.is_supplier));
       setAppointments(count ?? 0);
     })();
   }, [user, myLeads.length]);
@@ -38,6 +42,32 @@ const SupplierHome = () => {
         subtitle="Welkom terug! Hier is je lead- en afspraakenoverzicht."
       />
       <div className="p-6 space-y-6">
+        {!isSupplier && (
+          <Card className="border-destructive/50 bg-destructive/5">
+            <CardContent className="p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-destructive/20 flex items-center justify-center shrink-0">
+                    <AlertCircle className="w-5 h-5 text-destructive" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Leveranciersmodus staat uit</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Zet deze aan in je bedrijfsprofiel om leads uit de marketplace te zien en te claimen.
+                    </p>
+                  </div>
+                </div>
+                <Button asChild>
+                  <Link to="/supplier/profile">
+                    <Building2 className="w-4 h-4 mr-2" />
+                    Ga naar bedrijfsprofiel
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
             title="Open Leads"
