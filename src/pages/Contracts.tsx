@@ -40,6 +40,7 @@ import {
 import { useContracts, useCategories, Contract, ContractFormData } from "@/hooks/useContracts";
 import ContractFormDialog from "@/components/contracts/ContractFormDialog";
 import PublishMarketplaceDialog from "@/components/contracts/PublishMarketplaceDialog";
+import ContractDetailsDialog from "@/components/contracts/ContractDetailsDialog";
 import {
   Search,
   Filter,
