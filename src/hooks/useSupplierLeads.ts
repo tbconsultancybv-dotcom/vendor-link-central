@@ -57,61 +57,125 @@ export const useSupplierLeads = () => {
       return;
     }
 
-    const [{ data: profile }, { data, error }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("is_supplier")
-        .eq("user_id", user.id)
-        .maybeSingle(),
-      supabase
-        .from("marketplace_leads")
-        .select(
-          `id,status,credits_cost,created_at,claimed_at,customer_id,supplier_id,notes,
-           contract:contracts(id,name,supplier_name,description,start_date,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers,device_count,contact_email,contact_phone,responsible_name,notes,user_id,category:contract_categories(id,name,icon,color))`
-        )
-        .order("created_at", { ascending: false }),
-    ]);
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_supplier")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
     const supplierMode = Boolean(profile?.is_supplier);
     setIsSupplier(supplierMode);
 
-    if (!error && data) {
-      const all = data as unknown as SupplierLead[];
+    if (!supplierMode) {
+      setOpenLeads([]);
+      setMyLeads([]);
+      setLoading(false);
+      return;
+    }
 
-      // Hydrate customer profile info (province etc.) for each lead.
-      const customerIds = Array.from(new Set(all.map((l) => l.customer_id).filter(Boolean)));
-      let customerMap: Record<string, SupplierLead["contract"]["customer"]> = {};
-      if (customerIds.length > 0) {
-        const { data: customers } = await supabase
-          .from("profiles")
-          .select("user_id,full_name,company_name,email,phone,sector,province")
-          .in("user_id", customerIds);
-        if (customers) {
-          customerMap = Object.fromEntries(
-            customers.map((c) => [
-              c.user_id,
-              {
-                full_name: c.full_name,
-                company_name: c.company_name,
-                email: c.email,
-                phone: c.phone,
-                sector: c.sector,
-                province: c.province,
-              },
-            ])
-          );
-        }
-      }
-      const hydrated = all.map((l) => ({
-        ...l,
-        contract: l.contract
-          ? { ...l.contract, customer: customerMap[l.customer_id] ?? null }
-          : l.contract,
+    // Anonymized marketplace listings (secure RPC).
+    const [{ data: listings }, { data: claimed }] = await Promise.all([
+      supabase.rpc("list_marketplace_listings"),
+      supabase.rpc("get_my_claimed_leads"),
+    ]);
+
+    const open: SupplierLead[] = (listings ?? [])
+      .filter((row: any) => row.status === "open")
+      .map((row: any) => ({
+        id: row.lead_id,
+        status: row.status,
+        credits_cost: row.credits_cost,
+        created_at: row.created_at,
+        claimed_at: row.claimed_at,
+        customer_id: "",
+        supplier_id: row.supplier_id,
+        notes: null,
+        contract: {
+          id: row.contract_id,
+          // Anonymized: only sector / province / category / end date / device count visible.
+          name: row.category_name ?? "Lead",
+          supplier_name: null,
+          description: null,
+          start_date: null,
+          end_date: row.end_date,
+          monthly_cost: null,
+          yearly_cost: null,
+          contract_value: null,
+          data_visibility_level: row.data_visibility_level,
+          max_suppliers: null,
+          device_count: row.device_count,
+          contact_email: null,
+          contact_phone: null,
+          responsible_name: null,
+          notes: null,
+          user_id: null,
+          category: row.category_id
+            ? {
+                id: row.category_id,
+                name: row.category_name,
+                icon: row.category_icon,
+                color: row.category_color,
+              }
+            : null,
+          customer: {
+            full_name: null,
+            company_name: null,
+            email: null,
+            phone: null,
+            sector: row.sector,
+            province: row.province,
+          },
+        },
       }));
 
-      setOpenLeads(supplierMode ? hydrated.filter((l) => l.status === "open") : []);
-      setMyLeads(hydrated.filter((l) => l.supplier_id === user.id));
-    }
+    const mine: SupplierLead[] = (claimed ?? []).map((row: any) => ({
+      id: row.lead_id,
+      status: row.status,
+      credits_cost: row.credits_cost,
+      created_at: row.created_at,
+      claimed_at: row.claimed_at,
+      customer_id: row.customer_id,
+      supplier_id: user.id,
+      notes: row.notes,
+      contract: {
+        id: row.contract_id,
+        name: row.contract_name,
+        supplier_name: row.supplier_name,
+        description: row.description,
+        start_date: row.start_date,
+        end_date: row.end_date,
+        monthly_cost: row.monthly_cost,
+        yearly_cost: row.yearly_cost,
+        contract_value: row.contract_value,
+        data_visibility_level: row.data_visibility_level,
+        max_suppliers: row.max_suppliers,
+        device_count: row.device_count,
+        contact_email: row.contact_email,
+        contact_phone: row.contact_phone,
+        responsible_name: row.responsible_name,
+        notes: row.contract_notes,
+        user_id: row.customer_id,
+        category: row.category_id
+          ? {
+              id: row.category_id,
+              name: row.category_name,
+              icon: row.category_icon,
+              color: row.category_color,
+            }
+          : null,
+        customer: {
+          full_name: row.customer_full_name,
+          company_name: row.customer_company_name,
+          email: row.customer_email,
+          phone: row.customer_phone,
+          sector: row.customer_sector,
+          province: row.customer_province,
+        },
+      },
+    }));
+
+    setOpenLeads(open);
+    setMyLeads(mine);
     setLoading(false);
   }, [user]);
 
@@ -137,7 +201,6 @@ export const useSupplierLeads = () => {
   const claimLead = async (leadId: string, credits: number) => {
     if (!user) return { error: new Error("Niet ingelogd") };
 
-    // Check credit balance
     const { data: profile } = await supabase
       .from("profiles")
       .select("credits,is_supplier")
