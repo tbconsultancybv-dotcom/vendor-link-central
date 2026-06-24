@@ -596,6 +596,44 @@ export type Database = {
           uploaded_at: string
         }[]
       }
+      get_my_claimed_leads: {
+        Args: never
+        Returns: {
+          category_color: string
+          category_icon: string
+          category_id: string
+          category_name: string
+          claimed_at: string
+          contact_email: string
+          contact_phone: string
+          contract_id: string
+          contract_name: string
+          contract_notes: string
+          contract_value: number
+          created_at: string
+          credits_cost: number
+          customer_company_name: string
+          customer_email: string
+          customer_full_name: string
+          customer_id: string
+          customer_phone: string
+          customer_province: string
+          customer_sector: string
+          data_visibility_level: number
+          description: string
+          device_count: number
+          end_date: string
+          lead_id: string
+          max_suppliers: number
+          monthly_cost: number
+          notes: string
+          responsible_name: string
+          start_date: string
+          status: Database["public"]["Enums"]["lead_status"]
+          supplier_name: string
+          yearly_cost: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

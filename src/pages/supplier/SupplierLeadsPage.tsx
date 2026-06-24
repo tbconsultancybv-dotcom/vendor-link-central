@@ -22,7 +22,7 @@ import {
   Crown,
   FileLock2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+type LeadDocument = {
+  id: string;
+  file_name: string;
+  file_path: string;
+  file_type: string | null;
+  file_size: number | null;
+  uploaded_at: string;
+};
 
 const statusLabel: Record<string, string> = {
   open: "Open",
@@ -48,6 +59,57 @@ const SupplierLeadsPage = () => {
   const { myLeads } = supplierLeads;
   const [selected, setSelected] = useState<SupplierLead | null>(null);
   const [activeTab, setActiveTab] = useState("inbox");
+  const [leadDocs, setLeadDocs] = useState<LeadDocument[]>([]);
+  const [docsLoading, setDocsLoading] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!selected) {
+      setLeadDocs([]);
+      return;
+    }
+    const tier = (selected.contract?.data_visibility_level ?? 1) as number;
+    if (tier < 3) {
+      setLeadDocs([]);
+      return;
+    }
+    let cancelled = false;
+    setDocsLoading(true);
+    supabase
+      .rpc("get_lead_documents", { _lead_id: selected.id })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          toast({
+            title: "Documenten niet beschikbaar",
+            description: error.message,
+            variant: "destructive",
+          });
+          setLeadDocs([]);
+        } else {
+          setLeadDocs((data as LeadDocument[]) ?? []);
+        }
+        setDocsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selected, toast]);
+
+  const openDocument = async (doc: LeadDocument) => {
+    const { data, error } = await supabase.storage
+      .from("documents")
+      .createSignedUrl(doc.file_path, 60 * 10);
+    if (error || !data?.signedUrl) {
+      toast({
+        title: "Kon document niet openen",
+        description: error?.message ?? "Onbekende fout",
+        variant: "destructive",
+      });
+      return;
+    }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <>
@@ -296,9 +358,32 @@ const SupplierLeadsPage = () => {
                         <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
                           <FileLock2 className="w-4 h-4" /> Documenten
                         </h4>
-                        <p className="text-sm text-muted-foreground">
-                          PDF contracten en facturen zijn beschikbaar via de klantmap.
-                        </p>
+                        {docsLoading ? (
+                          <p className="text-sm text-muted-foreground">Documenten laden…</p>
+                        ) : leadDocs.length === 0 ? (
+                          <p className="text-sm text-muted-foreground">
+                            Nog geen documenten vrijgegeven voor deze lead.
+                          </p>
+                        ) : (
+                          <ul className="space-y-2">
+                            {leadDocs.map((doc) => (
+                              <li
+                                key={doc.id}
+                                className="flex items-center justify-between gap-3 rounded-md border border-border p-2"
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <FileText className="w-4 h-4 text-primary shrink-0" />
+                                  <span className="text-sm text-foreground truncate">
+                                    {doc.file_name}
+                                  </span>
+                                </div>
+                                <Button size="sm" variant="outline" onClick={() => openDocument(doc)}>
+                                  <Eye className="w-4 h-4 mr-1" /> Open
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     </>
                   ) : (
