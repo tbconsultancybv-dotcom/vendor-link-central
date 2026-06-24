@@ -186,8 +186,9 @@ const CompanyProfile = () => {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 
