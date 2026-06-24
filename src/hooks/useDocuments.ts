@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { createStorageBlobUrl } from "@/lib/storageFiles";
 
 export interface Document {
   id: string;
@@ -171,12 +172,7 @@ export const useDocuments = () => {
   });
 
   const getDownloadUrl = async (filePath: string) => {
-    const { data, error } = await supabase.storage
-      .from("documents")
-      .createSignedUrl(filePath, 3600);
-
-    if (error) throw error;
-    return data.signedUrl;
+    return createStorageBlobUrl(filePath);
   };
 
   return {

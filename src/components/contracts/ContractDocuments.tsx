@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useDocuments, Document } from "@/hooks/useDocuments";
 import { useToast } from "@/hooks/use-toast";
+import { openStorageFileInNewTab } from "@/lib/storageFiles";
 import { Button } from "@/components/ui/button";
 import { Upload, FileText, ExternalLink, Trash2, Loader2 } from "lucide-react";
 
@@ -19,7 +20,7 @@ const formatSize = (bytes: number | null) => {
 };
 
 const ContractDocuments = ({ contractId, title = "Documenten" }: ContractDocumentsProps) => {
-  const { uploadDocument, deleteDocument, getDownloadUrl } = useDocuments();
+  const { uploadDocument, deleteDocument } = useDocuments();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [openingId, setOpeningId] = useState<string | null>(null);
@@ -49,8 +50,7 @@ const ContractDocuments = ({ contractId, title = "Documenten" }: ContractDocumen
   const openDocument = async (doc: Document) => {
     try {
       setOpeningId(doc.id);
-      const url = await getDownloadUrl(doc.file_path);
-      window.open(url, "_blank", "noopener,noreferrer");
+      await openStorageFileInNewTab(doc.file_path);
     } catch (err) {
       toast({
         variant: "destructive",
