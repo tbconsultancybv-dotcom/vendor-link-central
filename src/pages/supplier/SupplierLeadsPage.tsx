@@ -358,9 +358,32 @@ const SupplierLeadsPage = () => {
                         <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
                           <FileLock2 className="w-4 h-4" /> Documenten
                         </h4>
-                        <p className="text-sm text-muted-foreground">
-                          PDF contracten en facturen zijn beschikbaar via de klantmap.
-                        </p>
+                        {docsLoading ? (
+                          <p className="text-sm text-muted-foreground">Documenten laden…</p>
+                        ) : leadDocs.length === 0 ? (
+                          <p className="text-sm text-muted-foreground">
+                            Nog geen documenten vrijgegeven voor deze lead.
+                          </p>
+                        ) : (
+                          <ul className="space-y-2">
+                            {leadDocs.map((doc) => (
+                              <li
+                                key={doc.id}
+                                className="flex items-center justify-between gap-3 rounded-md border border-border p-2"
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <FileText className="w-4 h-4 text-primary shrink-0" />
+                                  <span className="text-sm text-foreground truncate">
+                                    {doc.file_name}
+                                  </span>
+                                </div>
+                                <Button size="sm" variant="outline" onClick={() => openDocument(doc)}>
+                                  <Eye className="w-4 h-4 mr-1" /> Open
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     </>
                   ) : (
