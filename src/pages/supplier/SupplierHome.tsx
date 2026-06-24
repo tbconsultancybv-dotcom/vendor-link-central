@@ -42,6 +42,32 @@ const SupplierHome = () => {
         subtitle="Welkom terug! Hier is je lead- en afspraakenoverzicht."
       />
       <div className="p-6 space-y-6">
+        {!isSupplier && (
+          <Card className="border-destructive/50 bg-destructive/5">
+            <CardContent className="p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-destructive/20 flex items-center justify-center shrink-0">
+                    <AlertCircle className="w-5 h-5 text-destructive" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Leveranciersmodus staat uit</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Zet deze aan in je bedrijfsprofiel om leads uit de marketplace te zien en te claimen.
+                    </p>
+                  </div>
+                </div>
+                <Button asChild>
+                  <Link to="/supplier/profile">
+                    <Building2 className="w-4 h-4 mr-2" />
+                    Ga naar bedrijfsprofiel
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
             title="Open Leads"
