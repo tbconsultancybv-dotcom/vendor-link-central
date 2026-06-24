@@ -50,7 +50,7 @@ export const useSupplierLeads = () => {
       .from("marketplace_leads")
       .select(
         `id,status,credits_cost,created_at,claimed_at,supplier_id,notes,
-         contract:contracts(id,name,supplier_name,description,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers)`
+         contract:contracts(id,name,supplier_name,description,start_date,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers,contact_email,contact_phone,responsible_name,notes,user_id)`
       )
       .order("created_at", { ascending: false });
 
