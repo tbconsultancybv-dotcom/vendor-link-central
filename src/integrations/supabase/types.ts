@@ -79,6 +79,7 @@ export type Database = {
           decision_at: string | null
           department: string | null
           description: string | null
+          device_count: number | null
           division: string | null
           end_date: string
           id: string
@@ -112,6 +113,7 @@ export type Database = {
           decision_at?: string | null
           department?: string | null
           description?: string | null
+          device_count?: number | null
           division?: string | null
           end_date: string
           id?: string
@@ -145,6 +147,7 @@ export type Database = {
           decision_at?: string | null
           department?: string | null
           description?: string | null
+          device_count?: number | null
           division?: string | null
           end_date?: string
           id?: string
