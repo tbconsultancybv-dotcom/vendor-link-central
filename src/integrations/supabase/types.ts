@@ -220,6 +220,13 @@ export type Database = {
             referencedRelation: "marketplace_leads"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "credit_transactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["lead_id"]
+          },
         ]
       }
       documents: {
@@ -505,6 +512,13 @@ export type Database = {
             referencedRelation: "marketplace_leads"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "supplier_appointments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["lead_id"]
+          },
         ]
       }
       supplier_ratings: {
@@ -549,6 +563,13 @@ export type Database = {
             referencedRelation: "marketplace_leads"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "supplier_ratings_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["lead_id"]
+          },
         ]
       }
       user_roles: {
@@ -574,7 +595,42 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      marketplace_listings: {
+        Row: {
+          category_color: string | null
+          category_icon: string | null
+          category_id: string | null
+          category_name: string | null
+          claimed_at: string | null
+          contract_id: string | null
+          created_at: string | null
+          credits_cost: number | null
+          data_visibility_level: number | null
+          device_count: number | null
+          end_date: string | null
+          lead_id: string | null
+          province: string | null
+          sector: string | null
+          status: Database["public"]["Enums"]["lead_status"] | null
+          supplier_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "contract_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_leads_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       calculate_contract_status: {
@@ -584,6 +640,17 @@ export type Database = {
       calculate_lead_credits: {
         Args: { p_data_visibility: number; p_max_suppliers: number }
         Returns: number
+      }
+      get_lead_documents: {
+        Args: { _lead_id: string }
+        Returns: {
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id: string
+          uploaded_at: string
+        }[]
       }
       has_role: {
         Args: {
