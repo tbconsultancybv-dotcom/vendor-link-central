@@ -60,9 +60,14 @@ const PublishMarketplaceDialog = ({
   const [shareContractPdf, setShareContractPdf] = useState(false);
   const [shareInvoicePdf, setShareInvoicePdf] = useState(false);
 
+  // GDPR-toestemming (verplicht)
+  const [gdprConsent, setGdprConsent] = useState(false);
+
   // Afgeleid: tier op basis van de selectie
   const dataVisibility =
     shareContractPdf || shareInvoicePdf ? 3 : shareMonthlyCost ? 2 : 1;
+
+  const categoryName = contract.category?.name?.trim() || "uw sector";
 
   useEffect(() => {
     if (open) {
@@ -72,6 +77,7 @@ const PublishMarketplaceDialog = ({
       setShareMonthlyCost(initialLevel >= 2);
       setShareContractPdf(initialLevel >= 3);
       setShareInvoicePdf(initialLevel >= 3);
+      setGdprConsent(false);
     }
   }, [open, contract]);
 
