@@ -171,14 +171,16 @@ export const useContracts = () => {
   });
 
   const publishToMarketplace = useMutation({
-    mutationFn: async ({ 
-      contractId, 
-      maxSuppliers, 
-      dataVisibilityLevel 
-    }: { 
-      contractId: string; 
-      maxSuppliers: number; 
+    mutationFn: async ({
+      contractId,
+      maxSuppliers,
+      dataVisibilityLevel,
+      deviceCount,
+    }: {
+      contractId: string;
+      maxSuppliers: number;
       dataVisibilityLevel: number;
+      deviceCount?: number | null;
     }) => {
       if (!user) throw new Error("Not authenticated");
 
@@ -190,6 +192,7 @@ export const useContracts = () => {
           marketplace_date: new Date().toISOString(),
           max_suppliers: maxSuppliers,
           data_visibility_level: dataVisibilityLevel,
+          device_count: deviceCount ?? null,
         })
         .eq("id", contractId);
 
