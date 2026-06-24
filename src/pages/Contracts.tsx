@@ -73,6 +73,7 @@ const ContractsPage = () => {
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | undefined>();
 
   // Filtered contracts
