@@ -112,13 +112,18 @@ const ContractsPage = () => {
     }
   };
 
-  const handlePublishToMarketplace = (maxSuppliers: number, dataVisibility: number) => {
+  const handlePublishToMarketplace = (
+    maxSuppliers: number,
+    dataVisibility: number,
+    deviceCount: number | null
+  ) => {
     if (selectedContract) {
       publishToMarketplace.mutate(
         {
           contractId: selectedContract.id,
           maxSuppliers,
           dataVisibilityLevel: dataVisibility,
+          deviceCount,
         },
         { onSuccess: () => setPublishDialogOpen(false) }
       );
