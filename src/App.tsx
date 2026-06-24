@@ -19,6 +19,7 @@ import SupplierAppointmentsPage from "./pages/supplier/SupplierAppointmentsPage"
 import SupplierCreditsPage from "./pages/supplier/SupplierCreditsPage";
 import SupplierProfilePage from "./pages/supplier/SupplierProfilePage";
 import Settings from "./pages/Settings";
+import CompanyProfile from "./pages/CompanyProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/dashboard/reports" element={<Reports />} />
             <Route path="/dashboard/categories" element={<Categories />} />
             <Route path="/dashboard/settings" element={<Settings />} />
+            <Route path="/dashboard/company" element={<CompanyProfile />} />
             <Route path="/supplier" element={<SupplierLayout />}>
               <Route index element={<SupplierHome />} />
               <Route path="leads" element={<SupplierLeadsPage />} />

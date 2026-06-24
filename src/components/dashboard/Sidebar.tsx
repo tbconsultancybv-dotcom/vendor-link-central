@@ -20,7 +20,8 @@ const navItems = [
   { icon: Tag, label: "Categorieën", href: "/dashboard/categories" },
   { icon: Bell, label: "Notificaties", href: "/dashboard/notifications" },
   { icon: BarChart3, label: "Rapportages", href: "/dashboard/reports" },
-  { icon: Building2, label: "Leveranciers", href: "/supplier" },
+  { icon: Building2, label: "Bedrijfsprofiel", href: "/dashboard/company" },
+  { icon: Users, label: "Leveranciers", href: "/supplier" },
   { icon: Upload, label: "Documenten", href: "/dashboard/documents" },
   { icon: Users, label: "Team", href: "/dashboard" },
 ];
