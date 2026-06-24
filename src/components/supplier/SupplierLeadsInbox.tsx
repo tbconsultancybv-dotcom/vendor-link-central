@@ -12,6 +12,7 @@ import {
   Eye,
   EyeOff,
   Users,
+  AlertCircle,
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -32,7 +33,7 @@ const daysUntil = (d: string | null) => {
 };
 
 const SupplierLeadsInbox = ({ limit }: Props) => {
-  const { openLeads, loading, claimLead } = useSupplierLeads();
+  const { openLeads, loading, isSupplier, claimLead } = useSupplierLeads();
   const { toast } = useToast();
   const [claiming, setClaiming] = useState<string | null>(null);
 
@@ -92,6 +93,17 @@ const SupplierLeadsInbox = ({ limit }: Props) => {
         {loading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : !isSupplier ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <AlertCircle className="w-10 h-10 mx-auto mb-3 opacity-40" />
+            <p className="font-medium text-foreground">Leveranciersmodus staat uit</p>
+            <p className="text-sm mt-1 mb-4">
+              Zet deze aan in je bedrijfsprofiel om leads te kunnen claimen.
+            </p>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/supplier/profile">Bedrijfsprofiel openen</Link>
+            </Button>
           </div>
         ) : shown.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
