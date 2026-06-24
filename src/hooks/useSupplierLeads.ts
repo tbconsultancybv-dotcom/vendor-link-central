@@ -16,11 +16,25 @@ export type SupplierLead = {
     supplier_name: string | null;
     description: string | null;
     end_date: string | null;
+    start_date: string | null;
     monthly_cost: number | null;
     yearly_cost: number | null;
     contract_value: number | null;
     data_visibility_level: number | null;
     max_suppliers: number | null;
+    contact_email: string | null;
+    contact_phone: string | null;
+    responsible_name: string | null;
+    notes: string | null;
+    user_id: string | null;
+    customer?: {
+      full_name: string | null;
+      company_name: string | null;
+      email: string | null;
+      phone: string | null;
+      sector: string | null;
+      province: string | null;
+    } | null;
   } | null;
 };
 
@@ -36,7 +50,7 @@ export const useSupplierLeads = () => {
       .from("marketplace_leads")
       .select(
         `id,status,credits_cost,created_at,claimed_at,supplier_id,notes,
-         contract:contracts(id,name,supplier_name,description,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers)`
+         contract:contracts(id,name,supplier_name,description,start_date,end_date,monthly_cost,yearly_cost,contract_value,data_visibility_level,max_suppliers,contact_email,contact_phone,responsible_name,notes,user_id)`
       )
       .order("created_at", { ascending: false });
 
