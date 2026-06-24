@@ -75,9 +75,7 @@ export const useSupplierLeads = () => {
 
     if (!error && data) {
       const all = data as unknown as SupplierLead[];
-      setOpenLeads(
-        supplierMode ? all.filter((l) => l.status === "open" && l.customer_id !== user.id) : []
-      );
+      setOpenLeads(supplierMode ? all.filter((l) => l.status === "open") : []);
       setMyLeads(all.filter((l) => l.supplier_id === user.id));
     }
     setLoading(false);
